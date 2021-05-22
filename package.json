@@ -1,17 +1,18 @@
 {
-	"name": "mono",
+	"name": "mono_graphql",
 	"private": true,
 	"workspaces": [
 		"packages/*"
 	],
 	"scripts": {
-		"dev:all": "concurrently \"yarn dev:shared\" \"yarn dev:web\" ",
+		"dev:api": "yarn --cwd packages/api dev",
 		"dev:shared": "yarn --cwd packages/shared dev",
 		"dev:web": "yarn --cwd packages/web dev",
-		"build:all": "yarn build:shared && yarn build:web",
 		"build:shared": "yarn --cwd packages/shared build",
 		"build:web": "yarn --cwd packages/web build",
-		"start:web": "yarn --cwd packages/web start"
+		"build:api": "yarn --cwd packages/api build",
+		"start:web": "yarn --cwd packages/web start",
+		"start:api": "yarn --cwd packages/api start"
 	},
 	"license": "MIT",
 	"dependencies": {
