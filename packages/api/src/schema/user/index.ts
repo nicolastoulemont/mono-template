@@ -1,71 +1,70 @@
-import { objectType, unionType } from 'nexus'
-export * from './queries'
-export * from './actions'
+import { enumType, interfaceType, objectType, unionType } from 'nexus'
+export * from './query'
+export * from './mutation'
+import prisma from '@lib/prisma'
 
-export const User = objectType({
+export const User = interfaceType({
 	name: 'User',
-	isTypeOf: (data) => Boolean((data as any).email),
 	definition(t) {
-		t.id('id')
+		t.nullable.string('name')
+		t.field('status', { type: 'UserStatus' })
+	}
+})
+
+export const ActiveUser = objectType({
+	name: 'ActiveUser',
+	isTypeOf: (data) => Boolean((data as any).status === 'ACTIVE'),
+	definition(t) {
+		t.implements('Node')
+		t.implements('User')
 		t.string('email')
-		t.string('access')
-		t.boolean('verified')
-		t.date('createdAt')
-		t.date('updatedAt')
+		t.list.field('posts', {
+			type: 'Post',
+			resolve: async (u) =>
+				await prisma.user.findUnique({ where: { id: Number(u.id) } }).posts()
+		})
 	}
 })
 
 export const UserResult = unionType({
 	name: 'UserResult',
-	description: 'A response resulting in a User or some errors',
+	description: 'Return a user or user related errors',
 	definition(t) {
 		t.members(
-			'User',
+			'ActiveUser',
+			'DeletedUser',
+			'BannedUser',
 			'UserAuthenticationError',
-			'UserForbiddenError',
 			'InvalidArgumentsError',
-			'NotFoundError',
-			'UnableToProcessError'
+			'NotFoundError'
 		)
 	}
 })
 
-export const Users = objectType({
-	name: 'Users',
-	description: 'A list of Users',
-	isTypeOf: (data) => Boolean((data as any).users),
+export const UserStatus = enumType({
+	name: 'UserStatus',
+	members: ['ACTIVE', 'DELETED', 'BANNED'],
+	description: 'User account status'
+})
+
+export const deletedUser = objectType({
+	name: 'DeletedUser',
+	isTypeOf: (data) => Boolean((data as any).status === 'DELETED'),
 	definition(t) {
-		t.list.field('users', { type: 'User' })
+		t.implements('Node')
+		t.implements('User')
+		t.field('status', { type: 'UserStatus' })
+		t.date('deletedAt')
 	}
 })
 
-export const UsersResult = unionType({
-	name: 'UsersResult',
-	description: 'A response resulting in possibly more than one User or some errors',
+export const bannedUser = objectType({
+	name: 'BannedUser',
+	isTypeOf: (data) => Boolean((data as any).status === 'BANNED'),
 	definition(t) {
-		t.members(
-			'Users',
-			'UserAuthenticationError',
-			'UserForbiddenError',
-			'InvalidArgumentsError',
-			'NotFoundError',
-			'UnableToProcessError'
-		)
-	}
-})
-
-export const UserResponse = objectType({
-	name: 'UserResponse',
-	definition(t) {
-		t.field('user', { type: 'User' })
-		t.list.field('errors', { type: 'Error' })
-	}
-})
-
-export const UsersResponse = objectType({
-	name: 'UsersResponse',
-	definition(t) {
-		t.list.field('users', { type: 'User' })
-		t.list.field('errors', { type: 'Error' })
+		t.implements('Node')
+		t.implements('User')
+		t.field('status', { type: 'UserStatus' })
+		t.nullable.string('banReason')
 	}
 })

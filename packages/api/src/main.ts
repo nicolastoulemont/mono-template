@@ -4,7 +4,7 @@ import cluster from 'cluster'
 import os from 'os'
 import { serve } from './index'
 import { __prod__ } from './constants'
-import { prisma } from '@lib/prisma'
+import prisma from '@lib/prisma'
 
 if (__prod__) {
 	// Use all available cpus in prod to spin up multiple instance of the api

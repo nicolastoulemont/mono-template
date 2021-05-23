@@ -1,17 +1,9 @@
 import { enumType, objectType } from 'nexus'
 
-export const Error = objectType({
-	name: 'Error',
-	definition(t) {
-		t.string('key')
-		t.string('message')
-	},
-})
-
 export const ErrorCode = enumType({
 	name: 'ErrorCode',
 	description: 'The differents error codes the api will return if needed',
-	members: ['UNAUTHORIZED', 'FORBIDDEN', 'BAD_REQUEST', 'UNABLE_TO_PROCESS', 'NOT_FOUND'],
+	members: ['UNAUTHORIZED', 'FORBIDDEN', 'BAD_REQUEST', 'UNABLE_TO_PROCESS', 'NOT_FOUND']
 })
 
 export const ErrorMessage = enumType({
@@ -22,8 +14,8 @@ export const ErrorMessage = enumType({
 		'FORBIDDEN_YOU_DO_NOT_HAVE_ACCESS_TO_THIS_RESOURCE',
 		'UNABLE_TO_PROCESS_REQUEST_DUE_TO_CLIENT_ERROR',
 		'UNABLE_TO_PROCESS_REQUEST_DUE_TO_SERVER_ERROR',
-		'RESOURCE_NOT_FOUND',
-	],
+		'RESOURCE_NOT_FOUND'
+	]
 })
 
 export const InvalidArgument = objectType({
@@ -31,7 +23,7 @@ export const InvalidArgument = objectType({
 	definition(t) {
 		t.string('key')
 		t.string('message')
-	},
+	}
 })
 
 export const InvalidArgumentsErrorType = objectType({
@@ -40,14 +32,14 @@ export const InvalidArgumentsErrorType = objectType({
 	definition(t) {
 		t.field('code', {
 			type: 'ErrorCode',
-			resolve: () => 'BAD_REQUEST',
+			resolve: () => 'BAD_REQUEST'
 		})
 		t.field('message', {
 			type: 'ErrorMessage',
-			resolve: () => 'UNABLE_TO_PROCESS_REQUEST_DUE_TO_CLIENT_ERROR',
+			resolve: () => 'UNABLE_TO_PROCESS_REQUEST_DUE_TO_CLIENT_ERROR'
 		})
 		t.list.field('invalidArguments', { type: 'InvalidArgument' })
-	},
+	}
 })
 
 export const UnableToProcessErrorType = objectType({
@@ -56,13 +48,13 @@ export const UnableToProcessErrorType = objectType({
 	definition(t) {
 		t.field('code', {
 			type: 'ErrorCode',
-			resolve: () => 'UNABLE_TO_PROCESS',
+			resolve: () => 'UNABLE_TO_PROCESS'
 		})
 		t.field('message', {
 			type: 'ErrorMessage',
-			resolve: () => 'UNABLE_TO_PROCESS_REQUEST_DUE_TO_SERVER_ERROR',
+			resolve: () => 'UNABLE_TO_PROCESS_REQUEST_DUE_TO_SERVER_ERROR'
 		})
-	},
+	}
 })
 
 export const NotFoundErrorType = objectType({
@@ -71,13 +63,13 @@ export const NotFoundErrorType = objectType({
 	definition(t) {
 		t.field('code', {
 			type: 'ErrorCode',
-			resolve: () => 'NOT_FOUND',
+			resolve: () => 'NOT_FOUND'
 		})
 		t.field('message', {
 			type: 'ErrorMessage',
-			resolve: () => 'RESOURCE_NOT_FOUND',
+			resolve: () => 'RESOURCE_NOT_FOUND'
 		})
-	},
+	}
 })
 
 export const UserAuthenticationError = objectType({
@@ -86,13 +78,13 @@ export const UserAuthenticationError = objectType({
 	definition(t) {
 		t.field('code', {
 			type: 'ErrorCode',
-			resolve: () => 'UNAUTHORIZED',
+			resolve: () => 'UNAUTHORIZED'
 		})
 		t.field('message', {
 			type: 'ErrorMessage',
-			resolve: () => 'UNAUTHENTICATED_PLEASE_LOGIN',
+			resolve: () => 'UNAUTHENTICATED_PLEASE_LOGIN'
 		})
-	},
+	}
 })
 
 export const UserForbiddenError = objectType({
@@ -101,11 +93,11 @@ export const UserForbiddenError = objectType({
 	definition(t) {
 		t.field('code', {
 			type: 'ErrorCode',
-			resolve: () => 'FORBIDDEN',
+			resolve: () => 'FORBIDDEN'
 		})
 		t.field('message', {
 			type: 'ErrorMessage',
-			resolve: () => 'FORBIDDEN_YOU_DO_NOT_HAVE_ACCESS_TO_THIS_RESOURCE',
+			resolve: () => 'FORBIDDEN_YOU_DO_NOT_HAVE_ACCESS_TO_THIS_RESOURCE'
 		})
-	},
+	}
 })

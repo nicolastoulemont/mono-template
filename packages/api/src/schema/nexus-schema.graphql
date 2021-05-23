@@ -2,22 +2,37 @@
 ### Do not make changes to this file directly
 
 
-type BooleanResponse {
-  errors: [Error]
-  success: Boolean
+type ActiveUser implements Node & User {
+  email: String
+
+  """GUID for a resource"""
+  id: Int
+  name: String
+  posts: [Post]
+  status: UserStatus
 }
 
-"""Either a success result or errors"""
-union BooleanResult = InvalidArgumentsError | NotFoundError | Success | UnableToProcessError | UserAuthenticationError | UserForbiddenError
+type BannedUser implements Node & User {
+  banReason: String
+
+  """GUID for a resource"""
+  id: Int
+  name: String
+  status: UserStatus
+}
 
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar DateTime
 
-type Error {
-  key: String
-  message: String
+type DeletedUser implements Node & User {
+  deletedAt: DateTime
+
+  """GUID for a resource"""
+  id: Int
+  name: String
+  status: UserStatus
 }
 
 """The differents error codes the api will return if needed"""
@@ -50,16 +65,9 @@ type InvalidArgumentsError {
 }
 
 type Mutation {
-  deleteUser(confirmPassword: String!): BooleanResponse
-  lostPassword(email: String!, lang: String!): BooleanResponse
-  modifyEmail(email: String!): UserResponse
-  modifyPassword(newPassword: String!, password: String!): UserResponse
-  reSendVerificationEmail(email: String!, lang: String): BooleanResponse
-  resetPassword(newPassword: String!, token: String!): BooleanResponse
-  signIn(lang: String, user: Sign!): UserResult
-  signOut: BooleanResult
-  signUp(firstName: String!, lang: String!, originUrl: String, user: Sign!): UserResponse
-  verifyUser(token: String!): BooleanResponse
+  changeUserStatus(id: Int!, status: UserStatus!): UserResult
+  createPost(authorEmail: String!, content: String, title: String!): PostResult
+  createUser(email: String!, name: String!): UserResult
 }
 
 interface Node {
@@ -72,19 +80,24 @@ type NotFoundError {
   message: ErrorMessage
 }
 
+type Post implements Node {
+  author: User
+  content: String
+  createdAt: DateTime
+
+  """GUID for a resource"""
+  id: Int
+  published: Boolean
+  title: String
+  updatedAt: DateTime
+}
+
+"""Return a post and post related errors"""
+union PostResult = InvalidArgumentsError | Post | UserAuthenticationError
+
 type Query {
-  currentUser: UserResult
-  userById(id: ID!): UserResponse
-  users: UsersResponse
-}
-
-input Sign {
-  email: String!
-  password: String!
-}
-
-type Success {
-  success: Boolean
+  userById(id: ID!): UserResult
+  users: [UserResult]
 }
 
 type UnableToProcessError {
@@ -92,13 +105,9 @@ type UnableToProcessError {
   message: ErrorMessage
 }
 
-type User {
-  access: String
-  createdAt: DateTime
-  email: String
-  id: ID
-  updatedAt: DateTime
-  verified: Boolean
+interface User {
+  name: String
+  status: UserStatus
 }
 
 type UserAuthenticationError {
@@ -111,23 +120,12 @@ type UserForbiddenError {
   message: ErrorMessage
 }
 
-type UserResponse {
-  errors: [Error]
-  user: User
+"""Return a user or user related errors"""
+union UserResult = ActiveUser | BannedUser | DeletedUser | InvalidArgumentsError | NotFoundError | UserAuthenticationError
+
+"""User account status"""
+enum UserStatus {
+  ACTIVE
+  BANNED
+  DELETED
 }
-
-"""A response resulting in a User or some errors"""
-union UserResult = InvalidArgumentsError | NotFoundError | UnableToProcessError | User | UserAuthenticationError | UserForbiddenError
-
-"""A list of Users"""
-type Users {
-  users: [User]
-}
-
-type UsersResponse {
-  errors: [Error]
-  users: [User]
-}
-
-"""A response resulting in possibly more than one User or some errors"""
-union UsersResult = InvalidArgumentsError | NotFoundError | UnableToProcessError | UserAuthenticationError | UserForbiddenError | Users
