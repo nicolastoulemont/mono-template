@@ -13,7 +13,7 @@
 		"build:api": "yarn --cwd packages/api build",
 		"start:web": "yarn --cwd packages/web start",
 		"start:api": "yarn --cwd packages/api start",
-		"gen": "graphql-codegen --config codegen.yml"
+		"codegen": "graphql-codegen --config codegen.yml"
 	},
 	"license": "MIT",
 	"dependencies": {
