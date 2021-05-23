@@ -1,4 +1,4 @@
-import { NexusGenFieldTypes } from '../../schema/nexus-typegen'
+import { NexusGenFieldTypes } from '@schema/nexus-typegen'
 import { PartialInvalidArgumentsError } from '../errors'
 import { RecursiveKeyOf, ValidatorsLookUp } from './types'
 import { ValidatorsRegistry } from './validators'
