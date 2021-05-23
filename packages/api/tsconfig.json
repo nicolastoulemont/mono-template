@@ -18,7 +18,8 @@
 			"@config/*": ["src/config/*"],
 			"@utils/*": ["src/utils/*"],
 			"@emails/*":["src/emails/*"],
-			"@schema/*":["src/schema/*"]
+			"@schema/*":["src/schema/*"],
+			"@lib/*":["src/lib/*"]
 		} /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
 
 		"esModuleInterop": true

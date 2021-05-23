@@ -44,6 +44,7 @@
 		"@crons": "dist/crons/",
 		"@emails": "dist/emails/",
 		"@schema": "dist/schema/",
+		"@lib": "dist/lib/",
 		"src": "dist"
 	},
 	"devDependencies": {
