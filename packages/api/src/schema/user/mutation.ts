@@ -1,7 +1,6 @@
 import prisma from '@lib/prisma'
 import { mutationField, nonNull, stringArg, arg, intArg } from 'nexus'
 import { checkArgs } from '@utils/validation'
-import { authorize } from '@utils/authorization'
 
 export const createUser = mutationField('createUser', {
 	type: 'UserResult',
@@ -9,7 +8,6 @@ export const createUser = mutationField('createUser', {
 		name: nonNull(stringArg()),
 		email: nonNull(stringArg())
 	},
-	authorization: (ctx) => authorize(ctx, 'user'),
 	validation: (args) => checkArgs(args, ['name', 'email:mail']),
 	async resolve(_, { name, email }) {
 		const user = await prisma.user.create({

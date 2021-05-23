@@ -4,6 +4,7 @@ import * as types from './typeDefs'
 import path from 'path'
 
 export const schema = makeSchema({
+	shouldGenerateArtifacts: process.env.NODE_ENV === 'development',
 	types,
 	outputs: {
 		schema: path.join(__dirname, './nexus-schema.graphql'),
