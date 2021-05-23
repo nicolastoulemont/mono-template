@@ -67,11 +67,11 @@ export interface NexusGenObjects {
     status?: NexusGenEnums['UserStatus'] | null; // UserStatus
   }
   InvalidArgument: { // root type
-    key?: string | null; // String
-    message?: string | null; // String
+    key: string; // String!
+    message: string; // String!
   }
   InvalidArgumentsError: { // root type
-    invalidArguments?: Array<NexusGenRootTypes['InvalidArgument'] | null> | null; // [InvalidArgument]
+    invalidArguments: Array<NexusGenRootTypes['InvalidArgument'] | null>; // [InvalidArgument]!
   }
   Mutation: {};
   NotFoundError: {};
@@ -124,13 +124,13 @@ export interface NexusGenFieldTypes {
     status: NexusGenEnums['UserStatus'] | null; // UserStatus
   }
   InvalidArgument: { // field return type
-    key: string | null; // String
-    message: string | null; // String
+    key: string; // String!
+    message: string; // String!
   }
   InvalidArgumentsError: { // field return type
-    code: NexusGenEnums['ErrorCode'] | null; // ErrorCode
-    invalidArguments: Array<NexusGenRootTypes['InvalidArgument'] | null> | null; // [InvalidArgument]
-    message: NexusGenEnums['ErrorMessage'] | null; // ErrorMessage
+    code: NexusGenEnums['ErrorCode']; // ErrorCode!
+    invalidArguments: Array<NexusGenRootTypes['InvalidArgument'] | null>; // [InvalidArgument]!
+    message: NexusGenEnums['ErrorMessage']; // ErrorMessage!
   }
   Mutation: { // field return type
     changeUserStatus: NexusGenRootTypes['UserResult'] | null; // UserResult
@@ -138,8 +138,8 @@ export interface NexusGenFieldTypes {
     createUser: NexusGenRootTypes['UserResult'] | null; // UserResult
   }
   NotFoundError: { // field return type
-    code: NexusGenEnums['ErrorCode'] | null; // ErrorCode
-    message: NexusGenEnums['ErrorMessage'] | null; // ErrorMessage
+    code: NexusGenEnums['ErrorCode']; // ErrorCode!
+    message: NexusGenEnums['ErrorMessage']; // ErrorMessage!
   }
   Post: { // field return type
     author: NexusGenRootTypes['User'] | null; // User
@@ -155,16 +155,16 @@ export interface NexusGenFieldTypes {
     users: Array<NexusGenRootTypes['UserResult'] | null> | null; // [UserResult]
   }
   UnableToProcessError: { // field return type
-    code: NexusGenEnums['ErrorCode'] | null; // ErrorCode
-    message: NexusGenEnums['ErrorMessage'] | null; // ErrorMessage
+    code: NexusGenEnums['ErrorCode']; // ErrorCode!
+    message: NexusGenEnums['ErrorMessage']; // ErrorMessage!
   }
   UserAuthenticationError: { // field return type
-    code: NexusGenEnums['ErrorCode'] | null; // ErrorCode
-    message: NexusGenEnums['ErrorMessage'] | null; // ErrorMessage
+    code: NexusGenEnums['ErrorCode']; // ErrorCode!
+    message: NexusGenEnums['ErrorMessage']; // ErrorMessage!
   }
   UserForbiddenError: { // field return type
-    code: NexusGenEnums['ErrorCode'] | null; // ErrorCode
-    message: NexusGenEnums['ErrorMessage'] | null; // ErrorMessage
+    code: NexusGenEnums['ErrorCode']; // ErrorCode!
+    message: NexusGenEnums['ErrorMessage']; // ErrorMessage!
   }
   Node: { // field return type
     id: number | null; // Int

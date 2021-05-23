@@ -54,14 +54,14 @@ enum ErrorMessage {
 }
 
 type InvalidArgument {
-  key: String
-  message: String
+  key: String!
+  message: String!
 }
 
 type InvalidArgumentsError {
-  code: ErrorCode
-  invalidArguments: [InvalidArgument]
-  message: ErrorMessage
+  code: ErrorCode!
+  invalidArguments: [InvalidArgument]!
+  message: ErrorMessage!
 }
 
 type Mutation {
@@ -76,8 +76,8 @@ interface Node {
 }
 
 type NotFoundError {
-  code: ErrorCode
-  message: ErrorMessage
+  code: ErrorCode!
+  message: ErrorMessage!
 }
 
 type Post implements Node {
@@ -101,8 +101,8 @@ type Query {
 }
 
 type UnableToProcessError {
-  code: ErrorCode
-  message: ErrorMessage
+  code: ErrorCode!
+  message: ErrorMessage!
 }
 
 interface User {
@@ -111,13 +111,13 @@ interface User {
 }
 
 type UserAuthenticationError {
-  code: ErrorCode
-  message: ErrorMessage
+  code: ErrorCode!
+  message: ErrorMessage!
 }
 
 type UserForbiddenError {
-  code: ErrorCode
-  message: ErrorMessage
+  code: ErrorCode!
+  message: ErrorMessage!
 }
 
 """Return a user or user related errors"""
