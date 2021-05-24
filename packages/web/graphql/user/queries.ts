@@ -2,7 +2,6 @@ import gql from 'graphql-tag'
 
 export const GET_USER_BY_ID = gql`
 	query UserById($id: ID!) {
-		__typename
 		userById(id: $id) {
 			... on ActiveUser {
 				id

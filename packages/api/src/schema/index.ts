@@ -1,10 +1,11 @@
 import { fieldValidationPlugin, fieldAuthorizationPlugin, OperationLoggerPlugin } from './plugins'
 import { makeSchema } from 'nexus'
+import { __prod__ } from '../constants'
 import * as types from './typeDefs'
 import path from 'path'
 
 export const schema = makeSchema({
-	shouldGenerateArtifacts: process.env.NODE_ENV === 'development',
+	shouldGenerateArtifacts: !__prod__,
 	types,
 	outputs: {
 		schema: path.join(__dirname, './nexus-schema.graphql'),

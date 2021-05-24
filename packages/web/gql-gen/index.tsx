@@ -390,7 +390,6 @@ export function useChangeUserStatusMutation() {
 };
 export const UserByIdDocument = gql`
     query UserById($id: ID!) {
-  __typename
   userById(id: $id) {
     ... on ActiveUser {
       id

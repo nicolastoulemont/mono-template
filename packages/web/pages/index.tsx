@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react'
 import { toErrorRecord } from 'utils'
 import { isType, isTypeInTuple } from 'gql-typeguards'
 import { CheckIcon, CloseIcon, NotAllowedIcon } from '@chakra-ui/icons'
+import foo from 'shared'
 import {
 	useCreateUserMutation,
 	useUsersQuery,
@@ -60,6 +61,7 @@ export default function Home() {
 				flexDir='column'
 				justify='center'
 			>
+				{foo}
 				<Grid
 					width='100%'
 					maxW='1200px'
