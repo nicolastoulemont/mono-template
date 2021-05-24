@@ -2894,19 +2894,10 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react@*", "@types/react@^17.0.0", "@types/react@^17.0.6":
+"@types/react@*", "@types/react@^16", "@types/react@^17", "@types/react@^17.0.0", "@types/react@^17.0.6":
   version "17.0.6"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.6.tgz#0ec564566302c562bf497d73219797a5e0297013"
   integrity sha512-u/TtPoF/hrvb63LdukET6ncaplYsvCvmkceasx8oG84/ZCsoLxz9Z/raPBP4lTAiWW1Jb889Y9svHmv8R26dWw==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^16":
-  version "16.14.7"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.7.tgz#b62bd8cc4675d6fe3976126cdd208deda267f1fb"
-  integrity sha512-JhbikeQ1i18ut9Sro3j/xvhN073zJA9sqGqbwJByhOfLPXxEJdqjal9piZd9tmVEC+LP6RN2dLvWx9Hbr0reTw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
