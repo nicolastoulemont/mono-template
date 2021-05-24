@@ -1,7 +1,7 @@
 import { enumType, interfaceType, objectType, unionType } from 'nexus'
 export * from './query'
 export * from './mutation'
-import prisma from '@lib/prisma'
+import prisma from '../../lib/prisma'
 
 export const User = interfaceType({
 	name: 'User',

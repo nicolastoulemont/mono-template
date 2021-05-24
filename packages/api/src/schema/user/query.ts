@@ -1,6 +1,6 @@
-import prisma from '@lib/prisma'
+import prisma from '../../lib/prisma'
 import { idArg, list, nonNull, queryField } from 'nexus'
-import { NotFoundError } from '@utils/errors'
+import { NotFoundError } from '../../utils'
 
 export const userById = queryField('userById', {
 	type: 'UserResult',

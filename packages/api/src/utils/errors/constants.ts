@@ -1,4 +1,4 @@
-import { NexusGenFieldTypes } from '@schema/nexus-typegen'
+import { NexusGenFieldTypes } from '../../schema/nexus-typegen'
 
 export const NotFoundError: NexusGenFieldTypes['NotFoundError'] = {
 	code: 'NOT_FOUND',

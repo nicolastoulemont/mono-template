@@ -1,5 +1,5 @@
-import { ApiContext, RequestWithSession } from '@config/context'
-import { NexusGenFieldTypes } from '@schema/nexus-typegen'
+import { ApiContext, RequestWithSession } from '../../config'
+import { NexusGenFieldTypes } from '../../schema/nexus-typegen'
 import { UserAuthenticationError, UserForbiddenError } from '../errors'
 import { UserSessionData } from './types'
 

@@ -1,9 +1,9 @@
-import { context } from '@config/context'
-import { formatError } from '@config/formatError'
+import { context } from './context'
+import { formatError } from './formatError'
 import { ApolloServer } from 'apollo-server-express'
 import { schema } from '../schema'
 import depthLimit from 'graphql-depth-limit'
-import { SESSION_CONFIG } from '@config/session'
+import { SESSION_CONFIG } from './session'
 
 export const server = new ApolloServer({
 	schema,
@@ -13,10 +13,10 @@ export const server = new ApolloServer({
 		// Promisify the onConnect fn to allow express-session to parse and validate the session
 		onConnect: (_, ws: any) =>
 			new Promise((resolve) =>
-				SESSION_CONFIG(ws.upgradeReq, {} as any, () => resolve(ws.upgradeReq)),
-			),
+				SESSION_CONFIG(ws.upgradeReq, {} as any, () => resolve(ws.upgradeReq))
+			)
 	},
 	validationRules: [depthLimit(5)],
 	playground: true,
-	introspection: true,
+	introspection: true
 })

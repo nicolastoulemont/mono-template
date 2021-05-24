@@ -1,4 +1,4 @@
-import { UserSessionData, getUserFromSession } from '@utils/authorization'
+import { UserSessionData, getUserFromSession } from '../utils'
 import { pubsub } from './pubSub'
 import { Request, Response } from 'express'
 import { Session, SessionData } from 'express-session'

@@ -1,7 +1,7 @@
 import { PubSub } from 'apollo-server-express'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 import Redis from 'ioredis'
-import { __prod__ } from 'src/constants'
+import { __prod__ } from '../constants'
 
 // Redis config src: https://github.com/davidyaha/graphql-redis-subscriptions
 const options = {

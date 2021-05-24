@@ -1,6 +1,6 @@
-import prisma from '@lib/prisma'
+import prisma from '../../lib/prisma'
 import { mutationField, nonNull, stringArg, arg, intArg } from 'nexus'
-import { checkArgs } from '@utils/validation'
+import { checkArgs } from '../../utils'
 
 export const createUser = mutationField('createUser', {
 	type: 'UserResult',
