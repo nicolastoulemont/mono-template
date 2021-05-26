@@ -5,6 +5,7 @@
       "declarationMap": true,
       "sourceMap": true,
       "composite": true,
+      "skipLibCheck": true,
       "outDir": "dist",
       "rootDir": "src"
     },

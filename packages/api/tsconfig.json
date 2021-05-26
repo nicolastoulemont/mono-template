@@ -24,5 +24,5 @@
 		} /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
 	},
 	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist"]
+	"exclude": ["node_modules", "../../node_modules/**/*", "dist"]
 }
