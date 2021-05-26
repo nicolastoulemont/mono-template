@@ -10,9 +10,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "shared": "1.0.0",
+    "@urql/exchange-graphcache": "^4.1.1",
     "react": "17.0.1",
-    "react-native": "0.64.1"
+    "react-native": "0.64.1",
+    "shared": "1.0.0",
+    "urql": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
