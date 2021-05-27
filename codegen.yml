@@ -18,3 +18,11 @@ generates:
     config:
       nonOptionalTypename: true
       withHooks: true
+  packages/mobile/gql-gen/index.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      nonOptionalTypename: true
+      withHooks: true

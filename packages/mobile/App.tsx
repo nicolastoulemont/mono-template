@@ -10,7 +10,8 @@
 
 import React from 'react';
 import foo from 'shared';
-
+import { Provider } from 'urql';
+import { client } from './lib/urql';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,10 +29,11 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { useUsersQuery } from './gql-gen';
 
 const Section: React.FC<{
   title: string;
-}> = ({children, title}) => {
+}> = ({ children, title }) => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -57,7 +59,9 @@ const Section: React.FC<{
   );
 };
 
-const App = () => {
+const AppView = () => {
+  const [{ data, fetching }] = useUsersQuery();
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -77,6 +81,9 @@ const App = () => {
           }}>
           <Section title="Step One">
             <Text style={styles.highlight}> {foo}</Text>
+            {data?.users?.map(user => (
+              <Text key={user['id']}>{user['name']}</Text>
+            ))}
           </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
@@ -91,6 +98,14 @@ const App = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+};
+
+const App = () => {
+  return (
+    <Provider value={client}>
+      <AppView />
+    </Provider>
   );
 };
 
