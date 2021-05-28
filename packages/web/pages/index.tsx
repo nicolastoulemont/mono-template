@@ -11,7 +11,7 @@ import {
 	UserStatus,
 	useCreatePostMutation,
 	ActiveUser
-} from 'gql-gen'
+} from 'data'
 import {
 	UnorderedList,
 	ListItem,

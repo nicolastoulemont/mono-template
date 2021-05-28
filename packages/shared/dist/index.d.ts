@@ -1,3 +1,3 @@
-declare const foo = "Salut les gars yo";
+declare const foo = "Salut Seb";
 export default foo;
 //# sourceMappingURL=index.d.ts.map

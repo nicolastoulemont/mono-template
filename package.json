@@ -8,8 +8,9 @@
 	"scripts": {
 		"dev:api": "yarn --cwd packages/api dev",
 		"dev:shared": "yarn --cwd packages/shared dev",
+		"dev:data": "yarn --cwd packages/data dev",
 		"dev:web": "yarn --cwd packages/web dev",
-		"dev:all": "concurrently \"yarn dev:api\" \"yarn dev:shared\" \"yarn dev:web\" \"yarn codegen\" ",
+		"dev:all": "concurrently \"yarn dev:api\" \"yarn dev:shared\" \"yarn dev:data\" \"yarn dev:web\" \"yarn codegen\" ",
 		"build:shared": "yarn --cwd packages/shared build",
 		"build:web": "yarn --cwd packages/web build",
 		"build:api": "yarn --cwd packages/api build",

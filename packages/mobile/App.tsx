@@ -11,7 +11,7 @@
 import React from 'react';
 import foo from 'shared';
 import { Provider } from 'urql';
-import { client } from './lib/urql';
+import { mobileClient, useUsersQuery } from 'data';
 import {
   SafeAreaView,
   ScrollView,
@@ -21,7 +21,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
 import {
   Colors,
   DebugInstructions,
@@ -29,7 +28,6 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import { useUsersQuery } from './gql-gen';
 
 const Section: React.FC<{
   title: string;
@@ -79,12 +77,11 @@ const AppView = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            <Text style={styles.highlight}> {foo}</Text>
-            {data?.users?.map(user => (
-              <Text key={user['id']}>{user['name']}</Text>
-            ))}
-          </Section>
+          <Section title="Step One"></Section>
+          <Text style={styles.highlight}> {foo}</Text>
+          {data?.users?.map(user => (
+            <Text key={user['id']}>{user['name']}</Text>
+          ))}
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
@@ -103,7 +100,7 @@ const AppView = () => {
 
 const App = () => {
   return (
-    <Provider value={client}>
+    <Provider value={mobileClient}>
       <AppView />
     </Provider>
   );

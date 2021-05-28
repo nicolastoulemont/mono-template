@@ -15,7 +15,6 @@
 		"@emotion/react": "^11.4.0",
 		"@emotion/styled": "^11.3.0",
 		"urql": "2.0.3",
-		"@urql/exchange-graphcache": "4.1.1",
 		"framer-motion": "^4.1.17",
 		"gql-typeguards": "^1.0.0",
 		"graphql": "15.5.0"
