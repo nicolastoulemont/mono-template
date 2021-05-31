@@ -1,3 +1,3 @@
-const foo = 'Salut Seb'
+const foo = 'Salut !'
 
 export default foo

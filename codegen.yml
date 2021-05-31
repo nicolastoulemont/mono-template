@@ -1,23 +1,15 @@
 overwrite: true
-schema: "packages/api/src/schema/nexus-schema.graphql"
+schema: "packages/api/src/schema/schema.graphql"
 documents: "packages/data/src/graphql/**/*.ts"
 watch:
   - "packages/data/src/graphql/**/*.ts"
-  - "packages/api/src/schema/nexus-schema.graphql"
+  - "packages/api/src/schema/schema.graphql"
 generates:
   packages/data/src/introspection/schema.json:
     plugins:
       - urql-introspection
     config:
       module: commonjs
-  packages/mobile/gql-gen/index.tsx:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-urql"
-    config:
-      nonOptionalTypename: true
-      withHooks: true
   packages/data/src/gql-gen/index.ts:
     plugins:
       - "typescript"

@@ -239,10 +239,10 @@ export type ChangeUserStatusMutation = (
     )>>> }
   ) | (
     { __typename: 'BannedUser' }
-    & Pick<BannedUser, 'id' | 'name' | 'status' | 'banReason'>
+    & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>
   ) | (
     { __typename: 'DeletedUser' }
-    & Pick<DeletedUser, 'id' | 'name' | 'status' | 'deletedAt'>
+    & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>
   ) | (
     { __typename: 'InvalidArgumentsError' }
     & Pick<InvalidArgumentsError, 'code' | 'message'>
@@ -265,7 +265,17 @@ export type UserByIdQuery = (
   & { userById?: Maybe<(
     { __typename: 'ActiveUser' }
     & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'>
-  ) | { __typename: 'BannedUser' } | { __typename: 'DeletedUser' } | { __typename: 'InvalidArgumentsError' } | { __typename: 'NotFoundError' } | { __typename: 'UserAuthenticationError' }> }
+    & { posts?: Maybe<Array<Maybe<(
+      { __typename: 'Post' }
+      & Pick<Post, 'id' | 'title'>
+    )>>> }
+  ) | (
+    { __typename: 'BannedUser' }
+    & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>
+  ) | (
+    { __typename: 'DeletedUser' }
+    & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>
+  ) | { __typename: 'InvalidArgumentsError' } | { __typename: 'NotFoundError' } | { __typename: 'UserAuthenticationError' }> }
 );
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
@@ -282,10 +292,10 @@ export type UsersQuery = (
     )>>> }
   ) | (
     { __typename: 'BannedUser' }
-    & Pick<BannedUser, 'id' | 'name' | 'status' | 'banReason'>
+    & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>
   ) | (
     { __typename: 'DeletedUser' }
-    & Pick<DeletedUser, 'id' | 'name' | 'status' | 'deletedAt'>
+    & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>
   ) | { __typename: 'InvalidArgumentsError' } | { __typename: 'NotFoundError' } | { __typename: 'UserAuthenticationError' }>>> }
 );
 
@@ -347,27 +357,25 @@ export function useCreateUserMutation() {
 export const ChangeUserStatusDocument = gql`
     mutation ChangeUserStatus($status: UserStatus!, $id: Int!) {
   changeUserStatus(status: $status, id: $id) {
-    ... on ActiveUser {
+    ... on Node {
       id
+    }
+    ... on User {
       name
       status
-      email
-      posts {
-        id
-        title
+      ... on ActiveUser {
+        email
+        posts {
+          id
+          title
+        }
       }
-    }
-    ... on DeletedUser {
-      id
-      name
-      status
-      deletedAt
-    }
-    ... on BannedUser {
-      id
-      name
-      status
-      banReason
+      ... on DeletedUser {
+        deletedAt
+      }
+      ... on BannedUser {
+        banReason
+      }
     }
     ... on UserAuthenticationError {
       code
@@ -391,11 +399,25 @@ export function useChangeUserStatusMutation() {
 export const UserByIdDocument = gql`
     query UserById($id: ID!) {
   userById(id: $id) {
-    ... on ActiveUser {
+    ... on Node {
       id
+    }
+    ... on User {
       name
       status
-      email
+      ... on ActiveUser {
+        email
+        posts {
+          id
+          title
+        }
+      }
+      ... on DeletedUser {
+        deletedAt
+      }
+      ... on BannedUser {
+        banReason
+      }
     }
   }
 }
@@ -407,27 +429,25 @@ export function useUserByIdQuery(options: Omit<Urql.UseQueryArgs<UserByIdQueryVa
 export const UsersDocument = gql`
     query Users {
   users {
-    ... on ActiveUser {
+    ... on Node {
       id
+    }
+    ... on User {
       name
       status
-      email
-      posts {
-        id
-        title
+      ... on ActiveUser {
+        email
+        posts {
+          id
+          title
+        }
       }
-    }
-    ... on DeletedUser {
-      id
-      name
-      status
-      deletedAt
-    }
-    ... on BannedUser {
-      id
-      name
-      status
-      banReason
+      ... on DeletedUser {
+        deletedAt
+      }
+      ... on BannedUser {
+        banReason
+      }
     }
   }
 }

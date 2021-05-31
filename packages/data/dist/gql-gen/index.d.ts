@@ -214,9 +214,9 @@ export declare type ChangeUserStatusMutation = ({
         } & Pick<Post, 'id' | 'title'>)>>>;
     }) | ({
         __typename: 'BannedUser';
-    } & Pick<BannedUser, 'id' | 'name' | 'status' | 'banReason'>) | ({
+    } & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>) | ({
         __typename: 'DeletedUser';
-    } & Pick<DeletedUser, 'id' | 'name' | 'status' | 'deletedAt'>) | ({
+    } & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>) | ({
         __typename: 'InvalidArgumentsError';
     } & Pick<InvalidArgumentsError, 'code' | 'message'>) | ({
         __typename: 'NotFoundError';
@@ -232,11 +232,15 @@ export declare type UserByIdQuery = ({
 } & {
     userById?: Maybe<({
         __typename: 'ActiveUser';
-    } & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'>) | {
+    } & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'> & {
+        posts?: Maybe<Array<Maybe<({
+            __typename: 'Post';
+        } & Pick<Post, 'id' | 'title'>)>>>;
+    }) | ({
         __typename: 'BannedUser';
-    } | {
+    } & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>) | ({
         __typename: 'DeletedUser';
-    } | {
+    } & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>) | {
         __typename: 'InvalidArgumentsError';
     } | {
         __typename: 'NotFoundError';
@@ -258,9 +262,9 @@ export declare type UsersQuery = ({
         } & Pick<Post, 'id' | 'title'>)>>>;
     }) | ({
         __typename: 'BannedUser';
-    } & Pick<BannedUser, 'id' | 'name' | 'status' | 'banReason'>) | ({
+    } & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>) | ({
         __typename: 'DeletedUser';
-    } & Pick<DeletedUser, 'id' | 'name' | 'status' | 'deletedAt'>) | {
+    } & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>) | {
         __typename: 'InvalidArgumentsError';
     } | {
         __typename: 'NotFoundError';

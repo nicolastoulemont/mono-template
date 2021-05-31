@@ -30,27 +30,25 @@ export const CREATE_USER = gql`
 export const CHANGE_USER_STATUS = gql`
 	mutation ChangeUserStatus($status: UserStatus!, $id: Int!) {
 		changeUserStatus(status: $status, id: $id) {
-			... on ActiveUser {
+			... on Node {
 				id
+			}
+			... on User {
 				name
 				status
-				email
-				posts {
-					id
-					title
+				... on ActiveUser {
+					email
+					posts {
+						id
+						title
+					}
 				}
-			}
-			... on DeletedUser {
-				id
-				name
-				status
-				deletedAt
-			}
-			... on BannedUser {
-				id
-				name
-				status
-				banReason
+				... on DeletedUser {
+					deletedAt
+				}
+				... on BannedUser {
+					banReason
+				}
 			}
 			... on UserAuthenticationError {
 				code

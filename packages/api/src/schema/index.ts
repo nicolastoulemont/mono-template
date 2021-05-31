@@ -8,7 +8,7 @@ export const schema = makeSchema({
 	shouldGenerateArtifacts: !__prod__,
 	types,
 	outputs: {
-		schema: path.join(__dirname, './nexus-schema.graphql'),
+		schema: path.join(__dirname, './schema.graphql'),
 		typegen: path.join(__dirname, './nexus-typegen.d.ts')
 	},
 	plugins: [fieldValidationPlugin, fieldAuthorizationPlugin, OperationLoggerPlugin],
