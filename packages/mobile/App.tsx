@@ -9,9 +9,9 @@
  */
 
 import React from 'react';
-import foo from 'shared';
+import foo from '@mono/shared';
 import { Provider } from 'urql';
-import { mobileClient, useUsersQuery } from 'data';
+import { mobileClient, useUsersQuery } from '@mono/data';
 import {
   SafeAreaView,
   ScrollView,

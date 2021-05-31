@@ -1,5 +1,5 @@
 {
-	"name": "data",
+	"name": "@mono/data",
 	"version": "1.0.0",
 	"license": "ISC",
 	"main": "dist/index.js",

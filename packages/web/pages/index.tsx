@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react'
 import { toErrorRecord } from 'utils'
 import { isType, isTypeInTuple } from 'gql-typeguards'
 import { CheckIcon, CloseIcon, NotAllowedIcon } from '@chakra-ui/icons'
-import foo from 'shared'
+import foo from '@mono/shared'
 import {
 	useCreateUserMutation,
 	useUsersQuery,
@@ -11,7 +11,7 @@ import {
 	UserStatus,
 	useCreatePostMutation,
 	ActiveUser
-} from 'data'
+} from '@mono/data'
 import {
 	UnorderedList,
 	ListItem,
