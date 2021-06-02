@@ -3,15 +3,20 @@ import { PartialInvalidArgumentsError } from '../errors'
 import { RecursiveKeyOf, ValidatorsLookUp } from './types'
 import { ValidatorsRegistry } from './validators'
 
+type ValidatorRegistryKey = keyof typeof ValidatorsRegistry
+
 export function checkArgs<T extends Record<string, unknown>>(
 	args: T,
 	keys: Array<
-		| `${string & RecursiveKeyOf<typeof args>}:${keyof typeof ValidatorsRegistry}`
+		| `${string & RecursiveKeyOf<typeof args>}:${ValidatorRegistryKey}`
 		| `${string & RecursiveKeyOf<typeof args>}`
 	>
 ): NexusGenFieldTypes['InvalidArgumentsError'] | undefined {
 	const lookup = keys.reduce((acc: ValidatorsLookUp, key) => {
-		const [targetKey, targetFn = 'req'] = key.split(':')
+		const [targetKey, targetFn = 'req'] = key.split(':') as [
+			`${string & RecursiveKeyOf<typeof args>}`,
+			ValidatorRegistryKey
+		]
 		acc[targetKey] = ValidatorsRegistry[targetFn]
 		return acc
 	}, {})
