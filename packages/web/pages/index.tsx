@@ -2,27 +2,21 @@ import Head from 'next/head'
 import React, { useState, useMemo } from 'react'
 import { toErrorRecord } from 'utils'
 import { isType, isTypeInTuple } from 'gql-typeguards'
-import { CheckIcon, CloseIcon, NotAllowedIcon } from '@chakra-ui/icons'
+import { UserListItem } from 'components'
 import foo from '@mono/shared'
 import {
 	useCreateUserMutation,
 	useUsersQuery,
-	useChangeUserStatusMutation,
-	UserStatus,
 	useCreatePostMutation,
 	ActiveUser
 } from '@mono/data'
 import {
 	UnorderedList,
 	ListItem,
-	ListIcon,
 	Input,
 	Flex,
 	Button,
-	Box,
 	Heading,
-	Text,
-	IconButton,
 	Spinner,
 	Grid,
 	GridItem,
@@ -135,7 +129,7 @@ function UserForm() {
 	const [{ name, email }, setState] = useState(initialUserState)
 	const [errors, setErrors] = useState({})
 
-	const [result, saveUser] = useCreateUserMutation()
+	const [_, saveUser] = useCreateUserMutation()
 
 	async function handleSubmit(e) {
 		e?.preventDefault()
@@ -185,7 +179,7 @@ function PostForm({ activeUsers = [] }: { activeUsers: ActiveUsers }) {
 	const [{ title, content, authorEmail }, setState] = useState(initialPostState)
 	const [errors, setErrors] = useState({})
 
-	const [result, createPost] = useCreatePostMutation()
+	const [_, createPost] = useCreatePostMutation()
 
 	async function handleSubmit(e) {
 		e?.preventDefault()
@@ -233,105 +227,5 @@ function PostForm({ activeUsers = [] }: { activeUsers: ActiveUsers }) {
 			<Button onClick={handleSubmit}>Click me</Button>
 			{Object.keys(errors).length > 0 ? <pre>{JSON.stringify(errors, null, 2)}</pre> : null}
 		</GridItem>
-	)
-}
-
-function UserListItem({ user, children }: { user: any; children?: React.ReactNode }) {
-	const [result, changeUserStatus] = useChangeUserStatusMutation()
-	const icon =
-		user.status === 'ACTIVE'
-			? { name: CheckIcon, color: 'green.500' }
-			: user.status === 'DELETED'
-			? { name: CloseIcon, color: 'orange.500' }
-			: user.status === 'BANNED'
-			? { name: NotAllowedIcon, color: 'red.500' }
-			: null
-
-	async function changeStatus(status: UserStatus) {
-		await changeUserStatus({
-			id: user.id,
-			status
-		})
-	}
-
-	return (
-		<ListItem
-			listStyleType='none'
-			my={2}
-			p={3}
-			display='flex'
-			alignItems='flex-start'
-			justifyContent='flex-start'
-			borderRadius='10px'
-			bgColor='gray.50'
-			_hover={{ bgColor: 'gray.100' }}
-			width='100%'
-		>
-			{icon && <ListIcon as={icon.name} color={icon.color} mt={1} mr={3} />}
-			<Box flex='1'>
-				<Heading size='md'>{user.name}</Heading>
-				{user.email ? <Text size='sm'>{user.email}</Text> : null}
-				{children}
-			</Box>
-			<Flex>
-				{user.status === 'ACTIVE' ? (
-					<>
-						<IconButton
-							aria-label='Delete user'
-							icon={<CloseIcon />}
-							size='sm'
-							colorScheme='orange'
-							onClick={() => changeStatus('DELETED' as UserStatus.Deleted)}
-						/>
-						<IconButton
-							aria-label='Ban user'
-							icon={<NotAllowedIcon />}
-							size='sm'
-							ml={1}
-							colorScheme='red'
-							onClick={() => changeStatus('BANNED' as UserStatus.Banned)}
-						/>
-					</>
-				) : null}
-				{user.status === 'DELETED' ? (
-					<>
-						<IconButton
-							aria-label='UnDelete user'
-							icon={<CheckIcon />}
-							colorScheme='green'
-							size='sm'
-							onClick={() => changeStatus('ACTIVE' as UserStatus.Active)}
-						/>
-						<IconButton
-							aria-label='Ban user'
-							icon={<NotAllowedIcon />}
-							size='sm'
-							ml={1}
-							colorScheme='red'
-							onClick={() => changeStatus('BANNED' as UserStatus.Banned)}
-						/>
-					</>
-				) : null}
-				{user.status === 'BANNED' ? (
-					<>
-						<IconButton
-							aria-label='Delete user'
-							icon={<CloseIcon />}
-							size='sm'
-							colorScheme='orange'
-							onClick={() => changeStatus('DELETED' as UserStatus.Deleted)}
-						/>
-						<IconButton
-							aria-label='Unban user'
-							icon={<CheckIcon />}
-							size='sm'
-							ml={1}
-							colorScheme='green'
-							onClick={() => changeStatus('ACTIVE' as UserStatus.Active)}
-						/>
-					</>
-				) : null}
-			</Flex>
-		</ListItem>
 	)
 }
