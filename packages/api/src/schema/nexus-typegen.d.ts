@@ -30,6 +30,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  EmailAndPasswordInput: { // input type
+    email: string; // String!
+    password: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -48,6 +52,12 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Account: { // root type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    id?: number | null; // Int
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   ActiveUser: { // root type
     email?: string | null; // String
     id?: number | null; // Int
@@ -59,6 +69,9 @@ export interface NexusGenObjects {
     id?: number | null; // Int
     name?: string | null; // String
     status?: NexusGenEnums['UserStatus'] | null; // UserStatus
+  }
+  BooleanResult: { // root type
+    success?: boolean | null; // Boolean
   }
   DeletedUser: { // root type
     deletedAt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -90,11 +103,12 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
-  Node: NexusGenRootTypes['ActiveUser'] | NexusGenRootTypes['BannedUser'] | NexusGenRootTypes['DeletedUser'] | NexusGenRootTypes['Post'];
+  Node: NexusGenRootTypes['Account'] | NexusGenRootTypes['ActiveUser'] | NexusGenRootTypes['BannedUser'] | NexusGenRootTypes['DeletedUser'] | NexusGenRootTypes['Post'];
   User: NexusGenRootTypes['ActiveUser'] | NexusGenRootTypes['BannedUser'] | NexusGenRootTypes['DeletedUser'];
 }
 
 export interface NexusGenUnions {
+  AccountResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UnableToProcessError'] | NexusGenRootTypes['UserAuthenticationError'] | NexusGenRootTypes['UserForbiddenError'];
   PostResult: NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['Post'] | NexusGenRootTypes['UserAuthenticationError'];
   UserResult: NexusGenRootTypes['ActiveUser'] | NexusGenRootTypes['BannedUser'] | NexusGenRootTypes['DeletedUser'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UserAuthenticationError'];
 }
@@ -104,6 +118,12 @@ export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects & NexusGenU
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  Account: { // field return type
+    createdAt: NexusGenScalars['DateTime'] | null; // DateTime
+    email: string | null; // String
+    id: number | null; // Int
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   ActiveUser: { // field return type
     email: string | null; // String
     id: number | null; // Int
@@ -116,6 +136,9 @@ export interface NexusGenFieldTypes {
     id: number | null; // Int
     name: string | null; // String
     status: NexusGenEnums['UserStatus'] | null; // UserStatus
+  }
+  BooleanResult: { // field return type
+    success: boolean | null; // Boolean
   }
   DeletedUser: { // field return type
     deletedAt: NexusGenScalars['DateTime'] | null; // DateTime
@@ -134,8 +157,11 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     changeUserStatus: NexusGenRootTypes['UserResult'] | null; // UserResult
+    createAccount: NexusGenRootTypes['AccountResult'] | null; // AccountResult
     createPost: NexusGenRootTypes['PostResult'] | null; // PostResult
     createUser: NexusGenRootTypes['UserResult'] | null; // UserResult
+    signIn: NexusGenRootTypes['AccountResult'] | null; // AccountResult
+    signOut: NexusGenRootTypes['BooleanResult'] | null; // BooleanResult
   }
   NotFoundError: { // field return type
     code: NexusGenEnums['ErrorCode']; // ErrorCode!
@@ -176,6 +202,12 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  Account: { // field return type name
+    createdAt: 'DateTime'
+    email: 'String'
+    id: 'Int'
+    updatedAt: 'DateTime'
+  }
   ActiveUser: { // field return type name
     email: 'String'
     id: 'Int'
@@ -188,6 +220,9 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     name: 'String'
     status: 'UserStatus'
+  }
+  BooleanResult: { // field return type name
+    success: 'Boolean'
   }
   DeletedUser: { // field return type name
     deletedAt: 'DateTime'
@@ -206,8 +241,11 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     changeUserStatus: 'UserResult'
+    createAccount: 'AccountResult'
     createPost: 'PostResult'
     createUser: 'UserResult'
+    signIn: 'AccountResult'
+    signOut: 'BooleanResult'
   }
   NotFoundError: { // field return type name
     code: 'ErrorCode'
@@ -253,6 +291,9 @@ export interface NexusGenArgTypes {
       id: number; // Int!
       status: NexusGenEnums['UserStatus']; // UserStatus!
     }
+    createAccount: { // args
+      account: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
+    }
     createPost: { // args
       authorEmail: string; // String!
       content?: string | null; // String
@@ -261,6 +302,9 @@ export interface NexusGenArgTypes {
     createUser: { // args
       email: string; // String!
       name: string; // String!
+    }
+    signIn: { // args
+      account: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
     }
   }
   Query: {
@@ -271,13 +315,15 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
+  AccountResult: "Account" | "InvalidArgumentsError" | "NotFoundError" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError"
   PostResult: "InvalidArgumentsError" | "Post" | "UserAuthenticationError"
   UserResult: "ActiveUser" | "BannedUser" | "DeletedUser" | "InvalidArgumentsError" | "NotFoundError" | "UserAuthenticationError"
-  Node: "ActiveUser" | "BannedUser" | "DeletedUser" | "Post"
+  Node: "Account" | "ActiveUser" | "BannedUser" | "DeletedUser" | "Post"
   User: "ActiveUser" | "BannedUser" | "DeletedUser"
 }
 
 export interface NexusGenTypeInterfaces {
+  Account: "Node"
   ActiveUser: "Node" | "User"
   BannedUser: "Node" | "User"
   DeletedUser: "Node" | "User"
@@ -286,7 +332,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = keyof NexusGenEnums;
 
@@ -296,7 +342,7 @@ export type NexusGenScalarNames = keyof NexusGenScalars;
 
 export type NexusGenUnionNames = keyof NexusGenUnions;
 
-export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = "ActiveUser" | "BannedUser" | "DeletedUser" | "InvalidArgumentsError" | "NotFoundError" | "Post" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError";
+export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = "Account" | "ActiveUser" | "BannedUser" | "DeletedUser" | "InvalidArgumentsError" | "NotFoundError" | "Post" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError";
 
 export type NexusGenAbstractsUsingStrategyResolveType = never;
 

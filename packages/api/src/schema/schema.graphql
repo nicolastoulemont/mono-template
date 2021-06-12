@@ -2,6 +2,18 @@
 ### Do not make changes to this file directly
 
 
+type Account implements Node {
+  createdAt: DateTime
+  email: String
+
+  """GUID for a resource"""
+  id: Int
+  updatedAt: DateTime
+}
+
+"""Return an account or account related errors"""
+union AccountResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError | UserAuthenticationError | UserForbiddenError
+
 type ActiveUser implements Node & User {
   email: String
 
@@ -21,6 +33,10 @@ type BannedUser implements Node & User {
   status: UserStatus
 }
 
+type BooleanResult {
+  success: Boolean
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -33,6 +49,11 @@ type DeletedUser implements Node & User {
   id: Int
   name: String
   status: UserStatus
+}
+
+input EmailAndPasswordInput {
+  email: String!
+  password: String!
 }
 
 """The differents error codes the api will return if needed"""
@@ -66,8 +87,11 @@ type InvalidArgumentsError {
 
 type Mutation {
   changeUserStatus(id: Int!, status: UserStatus!): UserResult
+  createAccount(account: EmailAndPasswordInput!): AccountResult
   createPost(authorEmail: String!, content: String, title: String!): PostResult
   createUser(email: String!, name: String!): UserResult
+  signIn(account: EmailAndPasswordInput!): AccountResult
+  signOut: BooleanResult
 }
 
 interface Node {

@@ -4,6 +4,10 @@ export const NotFoundError: NexusGenFieldTypes['NotFoundError'] = {
 	code: 'NOT_FOUND',
 	message: 'RESOURCE_NOT_FOUND'
 }
+export const UnableToProcessError: NexusGenFieldTypes['UnableToProcessError'] = {
+	code: 'UNABLE_TO_PROCESS',
+	message: 'UNABLE_TO_PROCESS_REQUEST_DUE_TO_SERVER_ERROR'
+}
 
 export const UserForbiddenError: NexusGenFieldTypes['UserForbiddenError'] = {
 	code: 'FORBIDDEN',
