@@ -4,9 +4,9 @@
  */
 
 
-import { ApiContext } from "./../config/context"
-import { FieldValidationResolver, FieldAuthorizationResolver } from "./plugins"
-import { core } from "nexus"
+import type { ApiContext } from "./../config/context"
+import type { FieldValidationResolver, FieldAuthorizationResolver } from "./plugins"
+import type { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     /**
@@ -452,6 +452,8 @@ export interface NexusGenTypes {
 
 declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {
+  }
+  interface NexusGenPluginInputTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
     /**

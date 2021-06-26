@@ -18,3 +18,6 @@ generates:
     config:
       nonOptionalTypename: true
       withHooks: true
+      scalars:
+        DateTime: Date
+        EmailAddress: string

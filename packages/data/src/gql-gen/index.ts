@@ -13,8 +13,23 @@ export type Scalars = {
   Int: number;
   Float: number;
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  DateTime: any;
+  DateTime: Date;
+  /** A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/. */
+  EmailAddress: string;
 };
+
+export type Account = Node & {
+  __typename: 'Account';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  email?: Maybe<Scalars['EmailAddress']>;
+  /** GUID for a resource */
+  id?: Maybe<Scalars['Int']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  verifiedAt?: Maybe<Scalars['DateTime']>;
+};
+
+/** Return an account or account related errors */
+export type AccountResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError | UserAuthenticationError | UserForbiddenError;
 
 export type ActiveUser = Node & User & {
   __typename: 'ActiveUser';
@@ -35,6 +50,17 @@ export type BannedUser = Node & User & {
   status?: Maybe<UserStatus>;
 };
 
+export type BooleanResult = {
+  __typename: 'BooleanResult';
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+/** The result of the createAccount mutation */
+export type CreateAccountResult = Account | InvalidArgumentsError | UnableToProcessError;
+
+
+/** The result of the deleteAccount mutation */
+export type DeleteAccountResult = BooleanResult | InvalidArgumentsError | NotFoundError | UserAuthenticationError;
 
 export type DeletedUser = Node & User & {
   __typename: 'DeletedUser';
@@ -43,6 +69,12 @@ export type DeletedUser = Node & User & {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   status?: Maybe<UserStatus>;
+};
+
+
+export type EmailAndPasswordInput = {
+  email: Scalars['EmailAddress'];
+  password: Scalars['String'];
 };
 
 /** The differents error codes the api will return if needed */
@@ -76,17 +108,41 @@ export type InvalidArgumentsError = {
   message: ErrorMessage;
 };
 
+/** The result of the lostPassword mutation */
+export type LostPasswordResult = BooleanResult | NotFoundError;
+
+/** The result of the modifyEmail mutation */
+export type ModifyEmailResult = Account | InvalidArgumentsError | UnableToProcessError | UserAuthenticationError;
+
+/** The result of the modifyPassword mutation */
+export type ModifyPasswordResult = Account | InvalidArgumentsError | NotFoundError | UserAuthenticationError;
+
 export type Mutation = {
   __typename: 'Mutation';
   changeUserStatus?: Maybe<UserResult>;
+  createAccount?: Maybe<CreateAccountResult>;
   createPost?: Maybe<PostResult>;
   createUser?: Maybe<UserResult>;
+  deleteAccount?: Maybe<DeleteAccountResult>;
+  lostPassword?: Maybe<LostPasswordResult>;
+  modifyEmail?: Maybe<ModifyEmailResult>;
+  modifyPassword?: Maybe<ModifyPasswordResult>;
+  resetPassword?: Maybe<ResetPasswordResult>;
+  sendVerificationEmail?: Maybe<SendVerificationEmailResult>;
+  signIn?: Maybe<SignInResult>;
+  signOut?: Maybe<SignOutResult>;
+  verifyUser?: Maybe<VerifyUserResult>;
 };
 
 
 export type MutationChangeUserStatusArgs = {
   id: Scalars['Int'];
   status: UserStatus;
+};
+
+
+export type MutationCreateAccountArgs = {
+  account: EmailAndPasswordInput;
 };
 
 
@@ -100,6 +156,48 @@ export type MutationCreatePostArgs = {
 export type MutationCreateUserArgs = {
   email: Scalars['String'];
   name: Scalars['String'];
+};
+
+
+export type MutationDeleteAccountArgs = {
+  confirmPassword: Scalars['String'];
+};
+
+
+export type MutationLostPasswordArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationModifyEmailArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationModifyPasswordArgs = {
+  newPassword: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
+export type MutationResetPasswordArgs = {
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
+};
+
+
+export type MutationSendVerificationEmailArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationSignInArgs = {
+  account: EmailAndPasswordInput;
+};
+
+
+export type MutationVerifyUserArgs = {
+  token: Scalars['String'];
 };
 
 export type Node = {
@@ -139,6 +237,18 @@ export type QueryUserByIdArgs = {
   id: Scalars['ID'];
 };
 
+/** The result of the resetPassword mutation */
+export type ResetPasswordResult = BooleanResult | InvalidArgumentsError | UnableToProcessError;
+
+/** The result of the sendVerificationEmail mutation */
+export type SendVerificationEmailResult = BooleanResult | InvalidArgumentsError | NotFoundError | UnableToProcessError;
+
+/** The result of the signIn mutation */
+export type SignInResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError;
+
+/** The result of the signOut mutation */
+export type SignOutResult = BooleanResult | UserAuthenticationError;
+
 export type UnableToProcessError = {
   __typename: 'UnableToProcessError';
   code: ErrorCode;
@@ -171,6 +281,9 @@ export enum UserStatus {
   Banned = 'BANNED',
   Deleted = 'DELETED'
 }
+
+/** The result of the verifyUser mutation */
+export type VerifyUserResult = BooleanResult | InvalidArgumentsError | NotFoundError | UnableToProcessError;
 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
