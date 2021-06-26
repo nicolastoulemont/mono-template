@@ -7,5 +7,5 @@ export interface DecodedToken {
 export interface UserSessionData {
 	accountId: string
 	actorId: string
-	access: string
+	access: 'user' | 'admin'
 }
