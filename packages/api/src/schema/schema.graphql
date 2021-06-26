@@ -4,11 +4,12 @@
 
 type Account implements Node {
   createdAt: DateTime
-  email: String
+  email: EmailAddress
 
   """GUID for a resource"""
   id: Int
   updatedAt: DateTime
+  verifiedAt: DateTime
 }
 
 """Return an account or account related errors"""
@@ -37,10 +38,16 @@ type BooleanResult {
   success: Boolean
 }
 
+"""The result of the createAccount mutation"""
+union CreateAccountResult = Account | InvalidArgumentsError | UnableToProcessError
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar DateTime
+
+"""The result of the deleteAccount mutation"""
+union DeleteAccountResult = BooleanResult | InvalidArgumentsError | NotFoundError | UserAuthenticationError
 
 type DeletedUser implements Node & User {
   deletedAt: DateTime
@@ -51,8 +58,13 @@ type DeletedUser implements Node & User {
   status: UserStatus
 }
 
+"""
+A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
+"""
+scalar EmailAddress @specifiedBy(url: "https://www.w3.org/Protocols/rfc822/")
+
 input EmailAndPasswordInput {
-  email: String!
+  email: EmailAddress!
   password: String!
 }
 
@@ -85,13 +97,29 @@ type InvalidArgumentsError {
   message: ErrorMessage!
 }
 
+"""The result of the lostPassword mutation"""
+union LostPasswordResult = BooleanResult | NotFoundError
+
+"""The result of the modifyEmail mutation"""
+union ModifyEmailResult = Account | InvalidArgumentsError | UnableToProcessError | UserAuthenticationError
+
+"""The result of the modifyPassword mutation"""
+union ModifyPasswordResult = Account | InvalidArgumentsError | NotFoundError | UserAuthenticationError
+
 type Mutation {
   changeUserStatus(id: Int!, status: UserStatus!): UserResult
-  createAccount(account: EmailAndPasswordInput!): AccountResult
+  createAccount(account: EmailAndPasswordInput!): CreateAccountResult
   createPost(authorEmail: String!, content: String, title: String!): PostResult
   createUser(email: String!, name: String!): UserResult
-  signIn(account: EmailAndPasswordInput!): AccountResult
-  signOut: BooleanResult
+  deleteAccount(confirmPassword: String!): DeleteAccountResult
+  lostPassword(email: String!): LostPasswordResult
+  modifyEmail(email: String!): ModifyEmailResult
+  modifyPassword(newPassword: String!, password: String!): ModifyPasswordResult
+  resetPassword(newPassword: String!, token: String!): ResetPasswordResult
+  sendVerificationEmail(email: String!): SendVerificationEmailResult
+  signIn(account: EmailAndPasswordInput!): SignInResult
+  signOut: SignOutResult
+  verifyUser(token: String!): VerifyUserResult
 }
 
 interface Node {
@@ -124,6 +152,18 @@ type Query {
   users: [UserResult]
 }
 
+"""The result of the resetPassword mutation"""
+union ResetPasswordResult = BooleanResult | InvalidArgumentsError | UnableToProcessError
+
+"""The result of the sendVerificationEmail mutation"""
+union SendVerificationEmailResult = BooleanResult | InvalidArgumentsError | NotFoundError | UnableToProcessError
+
+"""The result of the signIn mutation"""
+union SignInResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError
+
+"""The result of the signOut mutation"""
+union SignOutResult = BooleanResult | UserAuthenticationError
+
 type UnableToProcessError {
   code: ErrorCode!
   message: ErrorMessage!
@@ -153,3 +193,6 @@ enum UserStatus {
   BANNED
   DELETED
 }
+
+"""The result of the verifyUser mutation"""
+union VerifyUserResult = BooleanResult | InvalidArgumentsError | NotFoundError | UnableToProcessError

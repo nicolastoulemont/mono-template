@@ -5,6 +5,7 @@ export interface DecodedToken {
 }
 
 export interface UserSessionData {
-	id: string
+	accountId: string
+	actorId: string
 	access: string
 }

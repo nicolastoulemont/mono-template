@@ -1,16 +1,16 @@
 import { objectType, unionType } from 'nexus'
 // export * from './query'
 export * from './mutation'
-import prisma from '../../lib/prisma'
 
 export const Account = objectType({
 	name: 'Account',
 	isTypeOf: (data) => Boolean((data as any).email),
 	definition(t) {
 		t.implements('Node')
-		t.string('email')
+		t.email('email')
 		t.date('createdAt')
 		t.date('updatedAt')
+		t.date('verifiedAt')
 	}
 })
 

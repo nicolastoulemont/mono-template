@@ -13,6 +13,10 @@ declare global {
      * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
      */
     date<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "DateTime";
+    /**
+     * A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
+     */
+    email<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "EmailAddress";
   }
 }
 declare global {
@@ -21,6 +25,10 @@ declare global {
      * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
      */
     date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "DateTime";
+    /**
+     * A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
+     */
+    email<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "EmailAddress";
   }
 }
 
@@ -31,7 +39,7 @@ declare global {
 
 export interface NexusGenInputs {
   EmailAndPasswordInput: { // input type
-    email: string; // String!
+    email: NexusGenScalars['EmailAddress']; // EmailAddress!
     password: string; // String!
   }
 }
@@ -49,14 +57,16 @@ export interface NexusGenScalars {
   Boolean: boolean
   ID: string
   DateTime: any
+  EmailAddress: any
 }
 
 export interface NexusGenObjects {
   Account: { // root type
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
-    email?: string | null; // String
+    email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     id?: number | null; // Int
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    verifiedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   ActiveUser: { // root type
     email?: string | null; // String
@@ -109,8 +119,18 @@ export interface NexusGenInterfaces {
 
 export interface NexusGenUnions {
   AccountResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UnableToProcessError'] | NexusGenRootTypes['UserAuthenticationError'] | NexusGenRootTypes['UserForbiddenError'];
+  CreateAccountResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['UnableToProcessError'];
+  DeleteAccountResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UserAuthenticationError'];
+  LostPasswordResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['NotFoundError'];
+  ModifyEmailResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['UnableToProcessError'] | NexusGenRootTypes['UserAuthenticationError'];
+  ModifyPasswordResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UserAuthenticationError'];
   PostResult: NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['Post'] | NexusGenRootTypes['UserAuthenticationError'];
+  ResetPasswordResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['UnableToProcessError'];
+  SendVerificationEmailResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UnableToProcessError'];
+  SignInResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UnableToProcessError'];
+  SignOutResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['UserAuthenticationError'];
   UserResult: NexusGenRootTypes['ActiveUser'] | NexusGenRootTypes['BannedUser'] | NexusGenRootTypes['DeletedUser'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UserAuthenticationError'];
+  VerifyUserResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UnableToProcessError'];
 }
 
 export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects & NexusGenUnions
@@ -120,9 +140,10 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Account: { // field return type
     createdAt: NexusGenScalars['DateTime'] | null; // DateTime
-    email: string | null; // String
+    email: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     id: number | null; // Int
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+    verifiedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   ActiveUser: { // field return type
     email: string | null; // String
@@ -157,11 +178,18 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     changeUserStatus: NexusGenRootTypes['UserResult'] | null; // UserResult
-    createAccount: NexusGenRootTypes['AccountResult'] | null; // AccountResult
+    createAccount: NexusGenRootTypes['CreateAccountResult'] | null; // CreateAccountResult
     createPost: NexusGenRootTypes['PostResult'] | null; // PostResult
     createUser: NexusGenRootTypes['UserResult'] | null; // UserResult
-    signIn: NexusGenRootTypes['AccountResult'] | null; // AccountResult
-    signOut: NexusGenRootTypes['BooleanResult'] | null; // BooleanResult
+    deleteAccount: NexusGenRootTypes['DeleteAccountResult'] | null; // DeleteAccountResult
+    lostPassword: NexusGenRootTypes['LostPasswordResult'] | null; // LostPasswordResult
+    modifyEmail: NexusGenRootTypes['ModifyEmailResult'] | null; // ModifyEmailResult
+    modifyPassword: NexusGenRootTypes['ModifyPasswordResult'] | null; // ModifyPasswordResult
+    resetPassword: NexusGenRootTypes['ResetPasswordResult'] | null; // ResetPasswordResult
+    sendVerificationEmail: NexusGenRootTypes['SendVerificationEmailResult'] | null; // SendVerificationEmailResult
+    signIn: NexusGenRootTypes['SignInResult'] | null; // SignInResult
+    signOut: NexusGenRootTypes['SignOutResult'] | null; // SignOutResult
+    verifyUser: NexusGenRootTypes['VerifyUserResult'] | null; // VerifyUserResult
   }
   NotFoundError: { // field return type
     code: NexusGenEnums['ErrorCode']; // ErrorCode!
@@ -204,9 +232,10 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Account: { // field return type name
     createdAt: 'DateTime'
-    email: 'String'
+    email: 'EmailAddress'
     id: 'Int'
     updatedAt: 'DateTime'
+    verifiedAt: 'DateTime'
   }
   ActiveUser: { // field return type name
     email: 'String'
@@ -241,11 +270,18 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     changeUserStatus: 'UserResult'
-    createAccount: 'AccountResult'
+    createAccount: 'CreateAccountResult'
     createPost: 'PostResult'
     createUser: 'UserResult'
-    signIn: 'AccountResult'
-    signOut: 'BooleanResult'
+    deleteAccount: 'DeleteAccountResult'
+    lostPassword: 'LostPasswordResult'
+    modifyEmail: 'ModifyEmailResult'
+    modifyPassword: 'ModifyPasswordResult'
+    resetPassword: 'ResetPasswordResult'
+    sendVerificationEmail: 'SendVerificationEmailResult'
+    signIn: 'SignInResult'
+    signOut: 'SignOutResult'
+    verifyUser: 'VerifyUserResult'
   }
   NotFoundError: { // field return type name
     code: 'ErrorCode'
@@ -303,8 +339,31 @@ export interface NexusGenArgTypes {
       email: string; // String!
       name: string; // String!
     }
+    deleteAccount: { // args
+      confirmPassword: string; // String!
+    }
+    lostPassword: { // args
+      email: string; // String!
+    }
+    modifyEmail: { // args
+      email: string; // String!
+    }
+    modifyPassword: { // args
+      newPassword: string; // String!
+      password: string; // String!
+    }
+    resetPassword: { // args
+      newPassword: string; // String!
+      token: string; // String!
+    }
+    sendVerificationEmail: { // args
+      email: string; // String!
+    }
     signIn: { // args
       account: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
+    }
+    verifyUser: { // args
+      token: string; // String!
     }
   }
   Query: {
@@ -316,8 +375,18 @@ export interface NexusGenArgTypes {
 
 export interface NexusGenAbstractTypeMembers {
   AccountResult: "Account" | "InvalidArgumentsError" | "NotFoundError" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError"
+  CreateAccountResult: "Account" | "InvalidArgumentsError" | "UnableToProcessError"
+  DeleteAccountResult: "BooleanResult" | "InvalidArgumentsError" | "NotFoundError" | "UserAuthenticationError"
+  LostPasswordResult: "BooleanResult" | "NotFoundError"
+  ModifyEmailResult: "Account" | "InvalidArgumentsError" | "UnableToProcessError" | "UserAuthenticationError"
+  ModifyPasswordResult: "Account" | "InvalidArgumentsError" | "NotFoundError" | "UserAuthenticationError"
   PostResult: "InvalidArgumentsError" | "Post" | "UserAuthenticationError"
+  ResetPasswordResult: "BooleanResult" | "InvalidArgumentsError" | "UnableToProcessError"
+  SendVerificationEmailResult: "BooleanResult" | "InvalidArgumentsError" | "NotFoundError" | "UnableToProcessError"
+  SignInResult: "Account" | "InvalidArgumentsError" | "NotFoundError" | "UnableToProcessError"
+  SignOutResult: "BooleanResult" | "UserAuthenticationError"
   UserResult: "ActiveUser" | "BannedUser" | "DeletedUser" | "InvalidArgumentsError" | "NotFoundError" | "UserAuthenticationError"
+  VerifyUserResult: "BooleanResult" | "InvalidArgumentsError" | "NotFoundError" | "UnableToProcessError"
   Node: "Account" | "ActiveUser" | "BannedUser" | "DeletedUser" | "Post"
   User: "ActiveUser" | "BannedUser" | "DeletedUser"
 }
@@ -342,7 +411,7 @@ export type NexusGenScalarNames = keyof NexusGenScalars;
 
 export type NexusGenUnionNames = keyof NexusGenUnions;
 
-export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = "Account" | "ActiveUser" | "BannedUser" | "DeletedUser" | "InvalidArgumentsError" | "NotFoundError" | "Post" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError";
+export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = "Account" | "ActiveUser" | "BannedUser" | "BooleanResult" | "DeletedUser" | "InvalidArgumentsError" | "NotFoundError" | "Post" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError";
 
 export type NexusGenAbstractsUsingStrategyResolveType = never;
 
