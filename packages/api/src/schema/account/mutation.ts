@@ -125,6 +125,7 @@ export const signOutResult = unionType({
 
 export const signOut = mutationField('signOut', {
 	type: 'SignOutResult',
+	description: 'Access restricted to logged in user',
 	authorization: (ctx) => authorize(ctx, 'user'),
 	async resolve(_, __, ctx) {
 		return new Promise((resolve) =>
@@ -160,6 +161,7 @@ export const modifyEmail = mutationField('modifyEmail', {
 	args: {
 		email: nonNull(stringArg())
 	},
+	description: 'Access restricted to logged in user',
 	authorization: (ctx) => authorize(ctx, 'user'),
 	validation: (args) => checkArgs(args, ['email:mail']),
 	async resolve(_, { email }, { user }) {
@@ -195,6 +197,7 @@ export const modifyPassword = mutationField('modifyPassword', {
 		password: nonNull(stringArg()),
 		newPassword: nonNull(stringArg())
 	},
+	description: 'Access restricted to logged in user',
 	authorization: (ctx) => authorize(ctx, 'user'),
 	validation: (args) => checkArgs(args, ['password:pwd', 'newPassword:pwd']),
 	async resolve(_, { password, newPassword }, { user }) {
@@ -239,6 +242,7 @@ export const deleteAccount = mutationField('deleteAccount', {
 	args: {
 		confirmPassword: nonNull(stringArg())
 	},
+	description: 'Access restricted to logged in user',
 	authorization: (ctx) => authorize(ctx, 'user'),
 	async resolve(_, { confirmPassword }, { req, res, user }) {
 		const account = await prisma.account.findUnique({

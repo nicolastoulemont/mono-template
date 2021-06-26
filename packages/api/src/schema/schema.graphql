@@ -12,8 +12,16 @@ type Account implements Node {
   verifiedAt: DateTime
 }
 
+"""The result of the accountById query"""
+union AccountByIdResult = Account | NotFoundError | UserAuthenticationError | UserForbiddenError
+
 """Return an account or account related errors"""
 union AccountResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError | UserAuthenticationError | UserForbiddenError
+
+"""List of accounts"""
+type AccountsList {
+  accounts: [Account]
+}
 
 type ActiveUser implements Node & User {
   email: String
@@ -24,6 +32,9 @@ type ActiveUser implements Node & User {
   posts: [Post]
   status: UserStatus
 }
+
+"""The result of the accounts query"""
+union AllAccountsResult = AccountsList | UnableToProcessError | UserAuthenticationError | UserForbiddenError
 
 type BannedUser implements Node & User {
   banReason: String
@@ -119,13 +130,21 @@ type Mutation {
   createAccount(payload: EmailAndPasswordInput!): CreateAccountResult
   createPost(authorEmail: String!, content: String, title: String!): PostResult
   createUser(email: String!, name: String!): UserResult
+
+  """Access restricted to logged in user"""
   deleteAccount(confirmPassword: String!): DeleteAccountResult
   lostPassword(email: String!): LostPasswordResult
+
+  """Access restricted to logged in user"""
   modifyEmail(email: String!): ModifyEmailResult
+
+  """Access restricted to logged in user"""
   modifyPassword(newPassword: String!, password: String!): ModifyPasswordResult
   resetPassword(payload: ResetPasswordInput!): ResetPasswordResult
   sendVerificationEmail(email: String!): SendVerificationEmailResult
   signIn(payload: EmailAndPasswordInput!): SignInResult
+
+  """Access restricted to logged in user"""
   signOut: SignOutResult
   verifyUser(payload: VerifyUserInput!): VerifyUserResult
 }
@@ -156,6 +175,13 @@ type Post implements Node {
 union PostResult = InvalidArgumentsError | Post | UserAuthenticationError
 
 type Query {
+  """Access restricted to admin users"""
+  accountById(id: ID!): AccountByIdResult
+
+  """Access restricted to admin users"""
+  allAccounts: AllAccountsResult
+
+  """Access restricted to logged in user"""
   currentAccount: CurrentAccountResult
   userById(id: ID!): UserResult
   users: [UserResult]
