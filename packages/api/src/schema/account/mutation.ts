@@ -1,9 +1,9 @@
+import { inputObjectType, mutationField, nonNull, unionType, arg, stringArg } from 'nexus'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { isAfter } from 'date-fns'
 import prisma from '../../lib/prisma'
 import { COOKIE_NAME } from '../../constants'
-import { inputObjectType, mutationField, nonNull, unionType, arg, stringArg } from 'nexus'
 import {
 	sendForgotPwdEmail,
 	sendVerificationEmail,
@@ -37,10 +37,10 @@ export const createAccountResult = unionType({
 export const createAccount = mutationField('createAccount', {
 	type: 'CreateAccountResult',
 	args: {
-		account: nonNull(arg({ type: EmailAndPasswordInput }))
+		payload: nonNull(arg({ type: EmailAndPasswordInput }))
 	},
 	validation: (args) => checkArgs(args, ['email:mail', 'password:pwd']),
-	async resolve(_, { account: { password, email } }) {
+	async resolve(_, { payload: { password, email } }) {
 		const existingAccount = await prisma.account.findUnique({
 			where: { email }
 		})
@@ -87,10 +87,10 @@ export const signInResult = unionType({
 export const signIn = mutationField('signIn', {
 	type: 'SignInResult',
 	args: {
-		account: nonNull(arg({ type: EmailAndPasswordInput }))
+		payload: nonNull(arg({ type: EmailAndPasswordInput }))
 	},
 	validation: (args) => checkArgs(args, ['email:mail', 'password:pwd']),
-	async resolve(_, { account: { email, password } }, ctx) {
+	async resolve(_, { payload: { email, password } }, ctx) {
 		const account = await prisma.account.findUnique({
 			where: { email },
 			include: {
@@ -301,17 +301,24 @@ export const resetPasswordResult = unionType({
 	}
 })
 
+export const ResetPasswordInput = inputObjectType({
+	name: 'ResetPasswordInput',
+	definition(t) {
+		t.nonNull.string('newPassword')
+		t.nonNull.jwt('token')
+	}
+})
+
 export const resetPassword = mutationField('resetPassword', {
 	type: 'ResetPasswordResult',
 	args: {
-		newPassword: nonNull(stringArg()),
-		token: nonNull(stringArg())
+		payload: nonNull(arg({ type: ResetPasswordInput }))
 	},
 	validation: (args) => checkArgs(args, ['newPassword:pwd', 'token']),
-	async resolve(_, args) {
+	async resolve(_, { payload }) {
 		try {
 			const token = jwt.verify(
-				args.token,
+				payload.token,
 				process.env.TOKEN_SECRET as string
 			) as DecodedForgotPwdEmailToken
 			const invalidTokenError = {
@@ -324,7 +331,7 @@ export const resetPassword = mutationField('resetPassword', {
 			if (isAfter(new Date(token.exp), new Date())) return invalidTokenError
 			if (!token.id) return invalidTokenError
 
-			const hash = await bcrypt.hash(args.newPassword, 12)
+			const hash = await bcrypt.hash(payload.newPassword, 12)
 			const updatedAccount = await prisma.account.update({
 				where: { id: token.id },
 				data: { password: hash }
@@ -375,13 +382,20 @@ export const verifyUserResult = unionType({
 	}
 })
 
+export const verifyUserInput = inputObjectType({
+	name: 'VerifyUserInput',
+	definition(t) {
+		t.nonNull.jwt('token')
+	}
+})
+
 export const verifyUser = mutationField('verifyUser', {
 	type: 'VerifyUserResult',
 	args: {
-		token: nonNull(stringArg())
+		payload: nonNull(arg({ type: verifyUserInput }))
 	},
 	validation: (args) => checkArgs(args, ['token']),
-	async resolve(_, args) {
+	async resolve(_, { payload }) {
 		const invalidTokenError = {
 			...PartialInvalidArgumentsError,
 			invalidArguments: [{ key: 'token', message: 'Invalid token' }]
@@ -389,7 +403,7 @@ export const verifyUser = mutationField('verifyUser', {
 
 		try {
 			const decodedToken = jwt.verify(
-				args.token,
+				payload.token,
 				process.env.TOKEN_SECRET as string
 			) as DecodedVerificationEmailToken
 

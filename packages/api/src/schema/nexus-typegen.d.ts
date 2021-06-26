@@ -17,6 +17,10 @@ declare global {
      * A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
      */
     email<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "EmailAddress";
+    /**
+     * A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+     */
+    jwt<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "JWT";
   }
 }
 declare global {
@@ -29,6 +33,10 @@ declare global {
      * A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
      */
     email<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "EmailAddress";
+    /**
+     * A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+     */
+    jwt<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "JWT";
   }
 }
 
@@ -41,6 +49,13 @@ export interface NexusGenInputs {
   EmailAndPasswordInput: { // input type
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     password: string; // String!
+  }
+  ResetPasswordInput: { // input type
+    newPassword: string; // String!
+    token: NexusGenScalars['JWT']; // JWT!
+  }
+  VerifyUserInput: { // input type
+    token: NexusGenScalars['JWT']; // JWT!
   }
 }
 
@@ -58,6 +73,7 @@ export interface NexusGenScalars {
   ID: string
   DateTime: any
   EmailAddress: any
+  JWT: any
 }
 
 export interface NexusGenObjects {
@@ -120,6 +136,7 @@ export interface NexusGenInterfaces {
 export interface NexusGenUnions {
   AccountResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UnableToProcessError'] | NexusGenRootTypes['UserAuthenticationError'] | NexusGenRootTypes['UserForbiddenError'];
   CreateAccountResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['UnableToProcessError'];
+  CurrentAccountResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UserAuthenticationError'] | NexusGenRootTypes['UserForbiddenError'];
   DeleteAccountResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['NotFoundError'] | NexusGenRootTypes['UserAuthenticationError'];
   LostPasswordResult: NexusGenRootTypes['BooleanResult'] | NexusGenRootTypes['NotFoundError'];
   ModifyEmailResult: NexusGenRootTypes['Account'] | NexusGenRootTypes['InvalidArgumentsError'] | NexusGenRootTypes['UnableToProcessError'] | NexusGenRootTypes['UserAuthenticationError'];
@@ -205,6 +222,7 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Query: { // field return type
+    currentAccount: NexusGenRootTypes['CurrentAccountResult'] | null; // CurrentAccountResult
     userById: NexusGenRootTypes['UserResult'] | null; // UserResult
     users: Array<NexusGenRootTypes['UserResult'] | null> | null; // [UserResult]
   }
@@ -297,6 +315,7 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
   }
   Query: { // field return type name
+    currentAccount: 'CurrentAccountResult'
     userById: 'UserResult'
     users: 'UserResult'
   }
@@ -328,7 +347,7 @@ export interface NexusGenArgTypes {
       status: NexusGenEnums['UserStatus']; // UserStatus!
     }
     createAccount: { // args
-      account: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
+      payload: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
     }
     createPost: { // args
       authorEmail: string; // String!
@@ -353,17 +372,16 @@ export interface NexusGenArgTypes {
       password: string; // String!
     }
     resetPassword: { // args
-      newPassword: string; // String!
-      token: string; // String!
+      payload: NexusGenInputs['ResetPasswordInput']; // ResetPasswordInput!
     }
     sendVerificationEmail: { // args
       email: string; // String!
     }
     signIn: { // args
-      account: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
+      payload: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
     }
     verifyUser: { // args
-      token: string; // String!
+      payload: NexusGenInputs['VerifyUserInput']; // VerifyUserInput!
     }
   }
   Query: {
@@ -376,6 +394,7 @@ export interface NexusGenArgTypes {
 export interface NexusGenAbstractTypeMembers {
   AccountResult: "Account" | "InvalidArgumentsError" | "NotFoundError" | "UnableToProcessError" | "UserAuthenticationError" | "UserForbiddenError"
   CreateAccountResult: "Account" | "InvalidArgumentsError" | "UnableToProcessError"
+  CurrentAccountResult: "Account" | "NotFoundError" | "UserAuthenticationError" | "UserForbiddenError"
   DeleteAccountResult: "BooleanResult" | "InvalidArgumentsError" | "NotFoundError" | "UserAuthenticationError"
   LostPasswordResult: "BooleanResult" | "NotFoundError"
   ModifyEmailResult: "Account" | "InvalidArgumentsError" | "UnableToProcessError" | "UserAuthenticationError"

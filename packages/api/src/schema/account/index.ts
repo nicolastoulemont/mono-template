@@ -1,5 +1,5 @@
 import { objectType, unionType } from 'nexus'
-// export * from './query'
+export * from './query'
 export * from './mutation'
 
 export const Account = objectType({

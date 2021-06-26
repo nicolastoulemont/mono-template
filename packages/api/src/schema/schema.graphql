@@ -41,6 +41,9 @@ type BooleanResult {
 """The result of the createAccount mutation"""
 union CreateAccountResult = Account | InvalidArgumentsError | UnableToProcessError
 
+"""The result of the currentAccount query"""
+union CurrentAccountResult = Account | NotFoundError | UserAuthenticationError | UserForbiddenError
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -97,6 +100,11 @@ type InvalidArgumentsError {
   message: ErrorMessage!
 }
 
+"""
+A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+"""
+scalar JWT
+
 """The result of the lostPassword mutation"""
 union LostPasswordResult = BooleanResult | NotFoundError
 
@@ -108,18 +116,18 @@ union ModifyPasswordResult = Account | InvalidArgumentsError | NotFoundError | U
 
 type Mutation {
   changeUserStatus(id: Int!, status: UserStatus!): UserResult
-  createAccount(account: EmailAndPasswordInput!): CreateAccountResult
+  createAccount(payload: EmailAndPasswordInput!): CreateAccountResult
   createPost(authorEmail: String!, content: String, title: String!): PostResult
   createUser(email: String!, name: String!): UserResult
   deleteAccount(confirmPassword: String!): DeleteAccountResult
   lostPassword(email: String!): LostPasswordResult
   modifyEmail(email: String!): ModifyEmailResult
   modifyPassword(newPassword: String!, password: String!): ModifyPasswordResult
-  resetPassword(newPassword: String!, token: String!): ResetPasswordResult
+  resetPassword(payload: ResetPasswordInput!): ResetPasswordResult
   sendVerificationEmail(email: String!): SendVerificationEmailResult
-  signIn(account: EmailAndPasswordInput!): SignInResult
+  signIn(payload: EmailAndPasswordInput!): SignInResult
   signOut: SignOutResult
-  verifyUser(token: String!): VerifyUserResult
+  verifyUser(payload: VerifyUserInput!): VerifyUserResult
 }
 
 interface Node {
@@ -148,8 +156,14 @@ type Post implements Node {
 union PostResult = InvalidArgumentsError | Post | UserAuthenticationError
 
 type Query {
+  currentAccount: CurrentAccountResult
   userById(id: ID!): UserResult
   users: [UserResult]
+}
+
+input ResetPasswordInput {
+  newPassword: String!
+  token: JWT!
 }
 
 """The result of the resetPassword mutation"""
@@ -192,6 +206,10 @@ enum UserStatus {
   ACTIVE
   BANNED
   DELETED
+}
+
+input VerifyUserInput {
+  token: JWT!
 }
 
 """The result of the verifyUser mutation"""
