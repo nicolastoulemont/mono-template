@@ -7,11 +7,16 @@ export const OperationLoggerPlugin = plugin({
 			const startTimeMs = new Date().valueOf()
 			const value = await next(root, args, ctx, info)
 			const endTimeMs = new Date().valueOf()
-			console.log(
-				`${info.operation.operation} ${info?.operation?.name?.value} took ${
-					endTimeMs - startTimeMs
-				} ms`
-			)
+
+			if (endTimeMs - startTimeMs > 0) {
+				console.log(
+					`${
+						info?.operation?.name?.value
+							? `${info.operation.operation} ${info?.operation?.name?.value}`
+							: `Unamed ${info.operation.operation}`
+					} took ${endTimeMs - startTimeMs} ms`
+				)
+			}
 			return value
 		}
 	}
