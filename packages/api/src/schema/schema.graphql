@@ -127,7 +127,7 @@ union ModifyPasswordResult = Account | InvalidArgumentsError | NotFoundError | U
 
 type Mutation {
   changeUserStatus(id: Int!, status: UserStatus!): UserResult
-  createAccount(payload: EmailAndPasswordInput!): CreateAccountResult
+  createAccount(input: EmailAndPasswordInput!): CreateAccountResult
   createPost(authorEmail: String!, content: String, title: String!): PostResult
   createUser(email: String!, name: String!): UserResult
 
@@ -140,13 +140,13 @@ type Mutation {
 
   """Access restricted to logged in user"""
   modifyPassword(newPassword: String!, password: String!): ModifyPasswordResult
-  resetPassword(payload: ResetPasswordInput!): ResetPasswordResult
+  resetPassword(input: ResetPasswordInput!): ResetPasswordResult
   sendVerificationEmail(email: String!): SendVerificationEmailResult
-  signIn(payload: EmailAndPasswordInput!): SignInResult
+  signIn(input: EmailAndPasswordInput!): SignInResult
 
   """Access restricted to logged in user"""
   signOut: SignOutResult
-  verifyUser(payload: VerifyUserInput!): VerifyUserResult
+  verifyUser(input: VerifyUserInput!): VerifyUserResult
 }
 
 interface Node {

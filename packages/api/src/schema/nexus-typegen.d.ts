@@ -362,7 +362,7 @@ export interface NexusGenArgTypes {
       status: NexusGenEnums['UserStatus']; // UserStatus!
     }
     createAccount: { // args
-      payload: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
+      input: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
     }
     createPost: { // args
       authorEmail: string; // String!
@@ -387,16 +387,16 @@ export interface NexusGenArgTypes {
       password: string; // String!
     }
     resetPassword: { // args
-      payload: NexusGenInputs['ResetPasswordInput']; // ResetPasswordInput!
+      input: NexusGenInputs['ResetPasswordInput']; // ResetPasswordInput!
     }
     sendVerificationEmail: { // args
       email: string; // String!
     }
     signIn: { // args
-      payload: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
+      input: NexusGenInputs['EmailAndPasswordInput']; // EmailAndPasswordInput!
     }
     verifyUser: { // args
-      payload: NexusGenInputs['VerifyUserInput']; // VerifyUserInput!
+      input: NexusGenInputs['VerifyUserInput']; // VerifyUserInput!
     }
   }
   Query: {

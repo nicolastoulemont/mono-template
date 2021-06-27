@@ -1,4 +1,4 @@
-import { idArg, list, nonNull, objectType, queryField, unionType } from 'nexus'
+import { idArg, nonNull, objectType, queryField, unionType } from 'nexus'
 import { authorize, checkArgs, NotFoundError, UnableToProcessError } from '../../utils'
 import prisma from '../../lib/prisma'
 

@@ -37,10 +37,10 @@ export const createAccountResult = unionType({
 export const createAccount = mutationField('createAccount', {
 	type: 'CreateAccountResult',
 	args: {
-		payload: nonNull(arg({ type: EmailAndPasswordInput }))
+		input: nonNull(arg({ type: EmailAndPasswordInput }))
 	},
 	validation: (args) => checkArgs(args, ['email:mail', 'password:pwd']),
-	async resolve(_, { payload: { password, email } }) {
+	async resolve(_, { input: { password, email } }) {
 		const existingAccount = await prisma.account.findUnique({
 			where: { email }
 		})
@@ -87,10 +87,10 @@ export const signInResult = unionType({
 export const signIn = mutationField('signIn', {
 	type: 'SignInResult',
 	args: {
-		payload: nonNull(arg({ type: EmailAndPasswordInput }))
+		input: nonNull(arg({ type: EmailAndPasswordInput }))
 	},
 	validation: (args) => checkArgs(args, ['email:mail', 'password:pwd']),
-	async resolve(_, { payload: { email, password } }, ctx) {
+	async resolve(_, { input: { email, password } }, ctx) {
 		const account = await prisma.account.findUnique({
 			where: { email },
 			include: {
@@ -316,13 +316,13 @@ export const ResetPasswordInput = inputObjectType({
 export const resetPassword = mutationField('resetPassword', {
 	type: 'ResetPasswordResult',
 	args: {
-		payload: nonNull(arg({ type: ResetPasswordInput }))
+		input: nonNull(arg({ type: ResetPasswordInput }))
 	},
 	validation: (args) => checkArgs(args, ['newPassword:pwd', 'token']),
-	async resolve(_, { payload }) {
+	async resolve(_, { input }) {
 		try {
 			const token = jwt.verify(
-				payload.token,
+				input.token,
 				process.env.TOKEN_SECRET as string
 			) as DecodedForgotPwdEmailToken
 			const invalidTokenError = {
@@ -335,7 +335,7 @@ export const resetPassword = mutationField('resetPassword', {
 			if (isAfter(new Date(token.exp), new Date())) return invalidTokenError
 			if (!token.id) return invalidTokenError
 
-			const hash = await bcrypt.hash(payload.newPassword, 12)
+			const hash = await bcrypt.hash(input.newPassword, 12)
 			const updatedAccount = await prisma.account.update({
 				where: { id: token.id },
 				data: { password: hash }
@@ -396,10 +396,10 @@ export const verifyUserInput = inputObjectType({
 export const verifyUser = mutationField('verifyUser', {
 	type: 'VerifyUserResult',
 	args: {
-		payload: nonNull(arg({ type: verifyUserInput }))
+		input: nonNull(arg({ type: verifyUserInput }))
 	},
 	validation: (args) => checkArgs(args, ['token']),
-	async resolve(_, { payload }) {
+	async resolve(_, { input }) {
 		const invalidTokenError = {
 			...PartialInvalidArgumentsError,
 			invalidArguments: [{ key: 'token', message: 'Invalid token' }]
@@ -407,7 +407,7 @@ export const verifyUser = mutationField('verifyUser', {
 
 		try {
 			const decodedToken = jwt.verify(
-				payload.token,
+				input.token,
 				process.env.TOKEN_SECRET as string
 			) as DecodedVerificationEmailToken
 
