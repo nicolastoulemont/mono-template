@@ -30,7 +30,13 @@ export const accountByIdResult = unionType({
 	name: 'AccountByIdResult',
 	description: 'The result of the accountById query',
 	definition(t) {
-		t.members('Account', 'UserAuthenticationError', 'UserForbiddenError', 'NotFoundError')
+		t.members(
+			'Account',
+			'UserAuthenticationError',
+			'UserForbiddenError',
+			'NotFoundError',
+			'InvalidArgumentsError'
+		)
 	}
 })
 

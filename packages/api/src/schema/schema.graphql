@@ -13,7 +13,7 @@ type Account implements Node {
 }
 
 """The result of the accountById query"""
-union AccountByIdResult = Account | NotFoundError | UserAuthenticationError | UserForbiddenError
+union AccountByIdResult = Account | InvalidArgumentsError | NotFoundError | UserAuthenticationError | UserForbiddenError
 
 """Return an account or account related errors"""
 union AccountResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError | UserAuthenticationError | UserForbiddenError
@@ -23,30 +23,28 @@ type AccountsList {
   accounts: [Account]
 }
 
-type ActiveUser implements Node & User {
-  email: String
-
-  """GUID for a resource"""
-  id: Int
-  name: String
-  posts: [Post]
-  status: UserStatus
+"""Represent the minimal fields required for any actors"""
+interface Actor {
+  accountId: ID!
+  createdAt: DateTime!
+  id: ID!
+  updatedAt: DateTime!
 }
 
 """The result of the accounts query"""
 union AllAccountsResult = AccountsList | UnableToProcessError | UserAuthenticationError | UserForbiddenError
 
-type BannedUser implements Node & User {
-  banReason: String
-
-  """GUID for a resource"""
-  id: Int
-  name: String
-  status: UserStatus
-}
+"""The result of the allUsers query"""
+union AllUsersResult = UnableToProcessError | UserAuthenticationError | UserForbiddenError | UsersList
 
 type BooleanResult {
   success: Boolean
+}
+
+input CreateAccountInput {
+  email: EmailAddress!
+  password: String!
+  username: String!
 }
 
 """The result of the createAccount mutation"""
@@ -62,15 +60,6 @@ scalar DateTime
 
 """The result of the deleteAccount mutation"""
 union DeleteAccountResult = BooleanResult | InvalidArgumentsError | NotFoundError | UserAuthenticationError
-
-type DeletedUser implements Node & User {
-  deletedAt: DateTime
-
-  """GUID for a resource"""
-  id: Int
-  name: String
-  status: UserStatus
-}
 
 """
 A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
@@ -126,10 +115,7 @@ union ModifyEmailResult = Account | InvalidArgumentsError | UnableToProcessError
 union ModifyPasswordResult = Account | InvalidArgumentsError | NotFoundError | UserAuthenticationError
 
 type Mutation {
-  changeUserStatus(id: Int!, status: UserStatus!): UserResult
-  createAccount(input: EmailAndPasswordInput!): CreateAccountResult
-  createPost(authorEmail: String!, content: String, title: String!): PostResult
-  createUser(email: String!, name: String!): UserResult
+  createAccount(input: CreateAccountInput!): CreateAccountResult
 
   """Access restricted to logged in user"""
   deleteAccount(confirmPassword: String!): DeleteAccountResult
@@ -159,21 +145,6 @@ type NotFoundError {
   message: ErrorMessage!
 }
 
-type Post implements Node {
-  author: User
-  content: String
-  createdAt: DateTime
-
-  """GUID for a resource"""
-  id: Int
-  published: Boolean
-  title: String
-  updatedAt: DateTime
-}
-
-"""Return a post and post related errors"""
-union PostResult = InvalidArgumentsError | Post | UserAuthenticationError
-
 type Query {
   """Access restricted to admin users"""
   accountById(id: ID!): AccountByIdResult
@@ -181,10 +152,14 @@ type Query {
   """Access restricted to admin users"""
   allAccounts: AllAccountsResult
 
+  """Access restricted to admin users"""
+  allUsers: AllUsersResult
+
   """Access restricted to logged in user"""
   currentAccount: CurrentAccountResult
-  userById(id: ID!): UserResult
-  users: [UserResult]
+
+  """Access restricted to admin users"""
+  userById(id: ID!): UserByIdResult
 }
 
 input ResetPasswordInput {
@@ -209,9 +184,12 @@ type UnableToProcessError {
   message: ErrorMessage!
 }
 
-interface User {
-  name: String
-  status: UserStatus
+type User implements Actor {
+  accountId: ID!
+  createdAt: DateTime!
+  id: ID!
+  updatedAt: DateTime!
+  username: String
 }
 
 type UserAuthenticationError {
@@ -219,19 +197,17 @@ type UserAuthenticationError {
   message: ErrorMessage!
 }
 
+"""The result of the userById query"""
+union UserByIdResult = InvalidArgumentsError | NotFoundError | User | UserAuthenticationError | UserForbiddenError
+
 type UserForbiddenError {
   code: ErrorCode!
   message: ErrorMessage!
 }
 
-"""Return a user or user related errors"""
-union UserResult = ActiveUser | BannedUser | DeletedUser | InvalidArgumentsError | NotFoundError | UserAuthenticationError
-
-"""User account status"""
-enum UserStatus {
-  ACTIVE
-  BANNED
-  DELETED
+"""List of users"""
+type UsersList {
+  users: [User]
 }
 
 input VerifyUserInput {

@@ -6,6 +6,6 @@ export interface DecodedToken {
 
 export interface UserSessionData {
 	accountId: string
-	actorId: string
+	userId: string
 	access: 'user' | 'admin'
 }

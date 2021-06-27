@@ -34,13 +34,22 @@ export const createAccountResult = unionType({
 	}
 })
 
+export const CreateAccountInput = inputObjectType({
+	name: 'CreateAccountInput',
+	definition(t) {
+		t.nonNull.email('email')
+		t.nonNull.string('password')
+		t.nonNull.string('username')
+	}
+})
+
 export const createAccount = mutationField('createAccount', {
 	type: 'CreateAccountResult',
 	args: {
-		input: nonNull(arg({ type: EmailAndPasswordInput }))
+		input: nonNull(arg({ type: CreateAccountInput }))
 	},
-	validation: (args) => checkArgs(args, ['email:mail', 'password:pwd']),
-	async resolve(_, { input: { password, email } }) {
+	validation: (args) => checkArgs(args, ['email:mail', 'password:pwd', 'username']),
+	async resolve(_, { input: { password, email, username } }) {
 		const existingAccount = await prisma.account.findUnique({
 			where: { email }
 		})
@@ -61,9 +70,10 @@ export const createAccount = mutationField('createAccount', {
 		})
 		if (!account) return UnableToProcessError
 
-		await prisma.actor.create({
+		await prisma.user.create({
 			data: {
-				accountId: account.id
+				accountId: account.id,
+				username
 			}
 		})
 
@@ -94,13 +104,13 @@ export const signIn = mutationField('signIn', {
 		const account = await prisma.account.findUnique({
 			where: { email },
 			include: {
-				actor: true
+				user: true
 			}
 		})
 
 		if (!account) return NotFoundError
 
-		if (!account?.actor?.id) return UnableToProcessError
+		if (!account?.user?.id) return UnableToProcessError
 
 		const validPassword = await bcrypt.compare(password, account.password)
 		if (!validPassword)
@@ -109,7 +119,7 @@ export const signIn = mutationField('signIn', {
 				invalidArguments: [{ key: 'password', message: 'Invalid password' }]
 			}
 
-		ctx.req.session.user = { accountId: account.id, actorId: account.actor.id, access: 'user' }
+		ctx.req.session.user = { accountId: account.id, userId: account.user.id, access: 'user' }
 
 		return account
 	}
