@@ -11,7 +11,8 @@
 import React from 'react';
 import foo from '@mono/shared';
 import { Provider } from 'urql';
-import { mobileClient, useUsersQuery } from '@mono/data';
+import { mobileClient, useAllUsersQuery } from '@mono/data';
+import { isType } from 'gql-typeguards';
 import {
   SafeAreaView,
   ScrollView,
@@ -58,7 +59,7 @@ const Section: React.FC<{
 };
 
 const AppView = () => {
-  const [{ data, fetching }] = useUsersQuery();
+  const [{ data }] = useAllUsersQuery();
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -77,11 +78,13 @@ const AppView = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One"></Section>
-          <Text style={styles.highlight}> {foo}</Text>
-          {data?.users?.map(user => (
-            <Text key={user['id']}>{user['name']}</Text>
-          ))}
+          <Section title="Step One">
+            <Text style={styles.highlight}> {foo}</Text>
+            {isType(data?.allUsers, 'UsersList') &&
+              data?.allUsers?.users?.map(user => (
+                <Text key={user.id}>{user.username}</Text>
+              ))}
+          </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
