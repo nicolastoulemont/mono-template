@@ -16,6 +16,8 @@ export type Scalars = {
   DateTime: Date;
   /** A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/. */
   EmailAddress: string;
+  /** A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction. */
+  JWT: any;
 };
 
 export type Account = Node & {
@@ -28,48 +30,52 @@ export type Account = Node & {
   verifiedAt?: Maybe<Scalars['DateTime']>;
 };
 
+/** The result of the accountById query */
+export type AccountByIdResult = Account | InvalidArgumentsError | NotFoundError | UserAuthenticationError | UserForbiddenError;
+
 /** Return an account or account related errors */
 export type AccountResult = Account | InvalidArgumentsError | NotFoundError | UnableToProcessError | UserAuthenticationError | UserForbiddenError;
 
-export type ActiveUser = Node & User & {
-  __typename: 'ActiveUser';
-  email?: Maybe<Scalars['String']>;
-  /** GUID for a resource */
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  posts?: Maybe<Array<Maybe<Post>>>;
-  status?: Maybe<UserStatus>;
+/** List of accounts */
+export type AccountsList = {
+  __typename: 'AccountsList';
+  accounts?: Maybe<Array<Maybe<Account>>>;
 };
 
-export type BannedUser = Node & User & {
-  __typename: 'BannedUser';
-  banReason?: Maybe<Scalars['String']>;
-  /** GUID for a resource */
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  status?: Maybe<UserStatus>;
+/** Represent the minimal fields required for any actors */
+export type Actor = {
+  accountId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
 };
+
+/** The result of the accounts query */
+export type AllAccountsResult = AccountsList | UnableToProcessError | UserAuthenticationError | UserForbiddenError;
+
+/** The result of the allUsers query */
+export type AllUsersResult = UnableToProcessError | UserAuthenticationError | UserForbiddenError | UsersList;
 
 export type BooleanResult = {
   __typename: 'BooleanResult';
   success?: Maybe<Scalars['Boolean']>;
 };
 
+export type CreateAccountInput = {
+  email: Scalars['EmailAddress'];
+  password: Scalars['String'];
+  username: Scalars['String'];
+};
+
 /** The result of the createAccount mutation */
 export type CreateAccountResult = Account | InvalidArgumentsError | UnableToProcessError;
+
+/** The result of the currentAccount query */
+export type CurrentAccountResult = Account | NotFoundError | UserAuthenticationError | UserForbiddenError;
 
 
 /** The result of the deleteAccount mutation */
 export type DeleteAccountResult = BooleanResult | InvalidArgumentsError | NotFoundError | UserAuthenticationError;
-
-export type DeletedUser = Node & User & {
-  __typename: 'DeletedUser';
-  deletedAt?: Maybe<Scalars['DateTime']>;
-  /** GUID for a resource */
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  status?: Maybe<UserStatus>;
-};
 
 
 export type EmailAndPasswordInput = {
@@ -108,6 +114,7 @@ export type InvalidArgumentsError = {
   message: ErrorMessage;
 };
 
+
 /** The result of the lostPassword mutation */
 export type LostPasswordResult = BooleanResult | NotFoundError;
 
@@ -119,43 +126,25 @@ export type ModifyPasswordResult = Account | InvalidArgumentsError | NotFoundErr
 
 export type Mutation = {
   __typename: 'Mutation';
-  changeUserStatus?: Maybe<UserResult>;
   createAccount?: Maybe<CreateAccountResult>;
-  createPost?: Maybe<PostResult>;
-  createUser?: Maybe<UserResult>;
+  /** Access restricted to logged in user */
   deleteAccount?: Maybe<DeleteAccountResult>;
   lostPassword?: Maybe<LostPasswordResult>;
+  /** Access restricted to logged in user */
   modifyEmail?: Maybe<ModifyEmailResult>;
+  /** Access restricted to logged in user */
   modifyPassword?: Maybe<ModifyPasswordResult>;
   resetPassword?: Maybe<ResetPasswordResult>;
   sendVerificationEmail?: Maybe<SendVerificationEmailResult>;
   signIn?: Maybe<SignInResult>;
+  /** Access restricted to logged in user */
   signOut?: Maybe<SignOutResult>;
   verifyUser?: Maybe<VerifyUserResult>;
 };
 
 
-export type MutationChangeUserStatusArgs = {
-  id: Scalars['Int'];
-  status: UserStatus;
-};
-
-
 export type MutationCreateAccountArgs = {
-  account: EmailAndPasswordInput;
-};
-
-
-export type MutationCreatePostArgs = {
-  authorEmail: Scalars['String'];
-  content?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
-};
-
-
-export type MutationCreateUserArgs = {
-  email: Scalars['String'];
-  name: Scalars['String'];
+  input: CreateAccountInput;
 };
 
 
@@ -181,8 +170,7 @@ export type MutationModifyPasswordArgs = {
 
 
 export type MutationResetPasswordArgs = {
-  newPassword: Scalars['String'];
-  token: Scalars['String'];
+  input: ResetPasswordInput;
 };
 
 
@@ -192,12 +180,12 @@ export type MutationSendVerificationEmailArgs = {
 
 
 export type MutationSignInArgs = {
-  account: EmailAndPasswordInput;
+  input: EmailAndPasswordInput;
 };
 
 
 export type MutationVerifyUserArgs = {
-  token: Scalars['String'];
+  input: VerifyUserInput;
 };
 
 export type Node = {
@@ -211,30 +199,33 @@ export type NotFoundError = {
   message: ErrorMessage;
 };
 
-export type Post = Node & {
-  __typename: 'Post';
-  author?: Maybe<User>;
-  content?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  /** GUID for a resource */
-  id?: Maybe<Scalars['Int']>;
-  published?: Maybe<Scalars['Boolean']>;
-  title?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-};
-
-/** Return a post and post related errors */
-export type PostResult = InvalidArgumentsError | Post | UserAuthenticationError;
-
 export type Query = {
   __typename: 'Query';
-  userById?: Maybe<UserResult>;
-  users?: Maybe<Array<Maybe<UserResult>>>;
+  /** Access restricted to admin users */
+  accountById?: Maybe<AccountByIdResult>;
+  /** Access restricted to admin users */
+  allAccounts?: Maybe<AllAccountsResult>;
+  /** Access restricted to admin users */
+  allUsers?: Maybe<AllUsersResult>;
+  /** Access restricted to logged in user */
+  currentAccount?: Maybe<CurrentAccountResult>;
+  /** Access restricted to admin users */
+  userById?: Maybe<UserByIdResult>;
+};
+
+
+export type QueryAccountByIdArgs = {
+  id: Scalars['ID'];
 };
 
 
 export type QueryUserByIdArgs = {
   id: Scalars['ID'];
+};
+
+export type ResetPasswordInput = {
+  newPassword: Scalars['String'];
+  token: Scalars['JWT'];
 };
 
 /** The result of the resetPassword mutation */
@@ -255,9 +246,13 @@ export type UnableToProcessError = {
   message: ErrorMessage;
 };
 
-export type User = {
-  name?: Maybe<Scalars['String']>;
-  status?: Maybe<UserStatus>;
+export type User = Actor & {
+  __typename: 'User';
+  accountId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
+  username?: Maybe<Scalars['String']>;
 };
 
 export type UserAuthenticationError = {
@@ -266,107 +261,27 @@ export type UserAuthenticationError = {
   message: ErrorMessage;
 };
 
+/** The result of the userById query */
+export type UserByIdResult = InvalidArgumentsError | NotFoundError | User | UserAuthenticationError | UserForbiddenError;
+
 export type UserForbiddenError = {
   __typename: 'UserForbiddenError';
   code: ErrorCode;
   message: ErrorMessage;
 };
 
-/** Return a user or user related errors */
-export type UserResult = ActiveUser | BannedUser | DeletedUser | InvalidArgumentsError | NotFoundError | UserAuthenticationError;
+/** List of users */
+export type UsersList = {
+  __typename: 'UsersList';
+  users?: Maybe<Array<Maybe<User>>>;
+};
 
-/** User account status */
-export enum UserStatus {
-  Active = 'ACTIVE',
-  Banned = 'BANNED',
-  Deleted = 'DELETED'
-}
+export type VerifyUserInput = {
+  token: Scalars['JWT'];
+};
 
 /** The result of the verifyUser mutation */
 export type VerifyUserResult = BooleanResult | InvalidArgumentsError | NotFoundError | UnableToProcessError;
-
-export type CreatePostMutationVariables = Exact<{
-  title: Scalars['String'];
-  content?: Maybe<Scalars['String']>;
-  authorEmail: Scalars['String'];
-}>;
-
-
-export type CreatePostMutation = (
-  { __typename: 'Mutation' }
-  & { createPost?: Maybe<(
-    { __typename: 'InvalidArgumentsError' }
-    & Pick<InvalidArgumentsError, 'code' | 'message'>
-    & { invalidArguments: Array<Maybe<(
-      { __typename: 'InvalidArgument' }
-      & Pick<InvalidArgument, 'key' | 'message'>
-    )>> }
-  ) | (
-    { __typename: 'Post' }
-    & Pick<Post, 'id' | 'title'>
-  ) | { __typename: 'UserAuthenticationError' }> }
-);
-
-export type CreateUserMutationVariables = Exact<{
-  name: Scalars['String'];
-  email: Scalars['String'];
-}>;
-
-
-export type CreateUserMutation = (
-  { __typename: 'Mutation' }
-  & { createUser?: Maybe<(
-    { __typename: 'ActiveUser' }
-    & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'>
-    & { posts?: Maybe<Array<Maybe<(
-      { __typename: 'Post' }
-      & Pick<Post, 'id' | 'title'>
-    )>>> }
-  ) | { __typename: 'BannedUser' } | { __typename: 'DeletedUser' } | (
-    { __typename: 'InvalidArgumentsError' }
-    & Pick<InvalidArgumentsError, 'code' | 'message'>
-    & { invalidArguments: Array<Maybe<(
-      { __typename: 'InvalidArgument' }
-      & Pick<InvalidArgument, 'key' | 'message'>
-    )>> }
-  ) | { __typename: 'NotFoundError' } | (
-    { __typename: 'UserAuthenticationError' }
-    & Pick<UserAuthenticationError, 'code' | 'message'>
-  )> }
-);
-
-export type ChangeUserStatusMutationVariables = Exact<{
-  status: UserStatus;
-  id: Scalars['Int'];
-}>;
-
-
-export type ChangeUserStatusMutation = (
-  { __typename: 'Mutation' }
-  & { changeUserStatus?: Maybe<(
-    { __typename: 'ActiveUser' }
-    & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'>
-    & { posts?: Maybe<Array<Maybe<(
-      { __typename: 'Post' }
-      & Pick<Post, 'id' | 'title'>
-    )>>> }
-  ) | (
-    { __typename: 'BannedUser' }
-    & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>
-  ) | (
-    { __typename: 'DeletedUser' }
-    & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>
-  ) | (
-    { __typename: 'InvalidArgumentsError' }
-    & Pick<InvalidArgumentsError, 'code' | 'message'>
-  ) | (
-    { __typename: 'NotFoundError' }
-    & Pick<NotFoundError, 'code' | 'message'>
-  ) | (
-    { __typename: 'UserAuthenticationError' }
-    & Pick<UserAuthenticationError, 'code' | 'message'>
-  )> }
-);
 
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -375,162 +290,33 @@ export type UserByIdQueryVariables = Exact<{
 
 export type UserByIdQuery = (
   { __typename: 'Query' }
-  & { userById?: Maybe<(
-    { __typename: 'ActiveUser' }
-    & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'>
-    & { posts?: Maybe<Array<Maybe<(
-      { __typename: 'Post' }
-      & Pick<Post, 'id' | 'title'>
-    )>>> }
-  ) | (
-    { __typename: 'BannedUser' }
-    & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>
-  ) | (
-    { __typename: 'DeletedUser' }
-    & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>
-  ) | { __typename: 'InvalidArgumentsError' } | { __typename: 'NotFoundError' } | { __typename: 'UserAuthenticationError' }> }
+  & { userById?: Maybe<{ __typename: 'InvalidArgumentsError' } | { __typename: 'NotFoundError' } | (
+    { __typename: 'User' }
+    & Pick<User, 'id' | 'username'>
+  ) | { __typename: 'UserAuthenticationError' } | { __typename: 'UserForbiddenError' }> }
 );
 
-export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = (
+export type AllUsersQuery = (
   { __typename: 'Query' }
-  & { users?: Maybe<Array<Maybe<(
-    { __typename: 'ActiveUser' }
-    & Pick<ActiveUser, 'id' | 'name' | 'status' | 'email'>
-    & { posts?: Maybe<Array<Maybe<(
-      { __typename: 'Post' }
-      & Pick<Post, 'id' | 'title'>
+  & { allUsers?: Maybe<{ __typename: 'UnableToProcessError' } | { __typename: 'UserAuthenticationError' } | { __typename: 'UserForbiddenError' } | (
+    { __typename: 'UsersList' }
+    & { users?: Maybe<Array<Maybe<(
+      { __typename: 'User' }
+      & Pick<User, 'id' | 'username'>
     )>>> }
-  ) | (
-    { __typename: 'BannedUser' }
-    & Pick<BannedUser, 'id' | 'banReason' | 'name' | 'status'>
-  ) | (
-    { __typename: 'DeletedUser' }
-    & Pick<DeletedUser, 'id' | 'deletedAt' | 'name' | 'status'>
-  ) | { __typename: 'InvalidArgumentsError' } | { __typename: 'NotFoundError' } | { __typename: 'UserAuthenticationError' }>>> }
+  )> }
 );
 
 
-export const CreatePostDocument = gql`
-    mutation CreatePost($title: String!, $content: String, $authorEmail: String!) {
-  createPost(title: $title, content: $content, authorEmail: $authorEmail) {
-    ... on Post {
-      id
-      title
-    }
-    ... on InvalidArgumentsError {
-      code
-      message
-      invalidArguments {
-        key
-        message
-      }
-    }
-  }
-}
-    `;
-
-export function useCreatePostMutation() {
-  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
-};
-export const CreateUserDocument = gql`
-    mutation CreateUser($name: String!, $email: String!) {
-  createUser(name: $name, email: $email) {
-    ... on ActiveUser {
-      id
-      name
-      status
-      email
-      posts {
-        id
-        title
-      }
-    }
-    ... on UserAuthenticationError {
-      code
-      message
-    }
-    ... on InvalidArgumentsError {
-      code
-      message
-      invalidArguments {
-        key
-        message
-      }
-    }
-  }
-}
-    `;
-
-export function useCreateUserMutation() {
-  return Urql.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument);
-};
-export const ChangeUserStatusDocument = gql`
-    mutation ChangeUserStatus($status: UserStatus!, $id: Int!) {
-  changeUserStatus(status: $status, id: $id) {
-    ... on Node {
-      id
-    }
-    ... on User {
-      name
-      status
-      ... on ActiveUser {
-        email
-        posts {
-          id
-          title
-        }
-      }
-      ... on DeletedUser {
-        deletedAt
-      }
-      ... on BannedUser {
-        banReason
-      }
-    }
-    ... on UserAuthenticationError {
-      code
-      message
-    }
-    ... on InvalidArgumentsError {
-      code
-      message
-    }
-    ... on NotFoundError {
-      code
-      message
-    }
-  }
-}
-    `;
-
-export function useChangeUserStatusMutation() {
-  return Urql.useMutation<ChangeUserStatusMutation, ChangeUserStatusMutationVariables>(ChangeUserStatusDocument);
-};
 export const UserByIdDocument = gql`
     query UserById($id: ID!) {
   userById(id: $id) {
-    ... on Node {
-      id
-    }
     ... on User {
-      name
-      status
-      ... on ActiveUser {
-        email
-        posts {
-          id
-          title
-        }
-      }
-      ... on DeletedUser {
-        deletedAt
-      }
-      ... on BannedUser {
-        banReason
-      }
+      id
+      username
     }
   }
 }
@@ -539,33 +325,19 @@ export const UserByIdDocument = gql`
 export function useUserByIdQuery(options: Omit<Urql.UseQueryArgs<UserByIdQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UserByIdQuery>({ query: UserByIdDocument, ...options });
 };
-export const UsersDocument = gql`
-    query Users {
-  users {
-    ... on Node {
-      id
-    }
-    ... on User {
-      name
-      status
-      ... on ActiveUser {
-        email
-        posts {
-          id
-          title
-        }
-      }
-      ... on DeletedUser {
-        deletedAt
-      }
-      ... on BannedUser {
-        banReason
+export const AllUsersDocument = gql`
+    query AllUsers {
+  allUsers {
+    ... on UsersList {
+      users {
+        id
+        username
       }
     }
   }
 }
     `;
 
-export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options });
+export function useAllUsersQuery(options: Omit<Urql.UseQueryArgs<AllUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AllUsersQuery>({ query: AllUsersDocument, ...options });
 };
