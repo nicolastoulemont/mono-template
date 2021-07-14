@@ -17,8 +17,10 @@ export const schema = makeSchema({
 			isTypeOf: true
 		}
 	},
-	contextType: {
-		module: path.join(__dirname, '../', 'config', 'context.ts'),
-		export: 'ApiContext'
-	}
+	...(!__prod__ && {
+		contextType: {
+			module: path.join(__dirname, '../', 'config', 'context.ts'),
+			export: 'ApiContext'
+		}
+	})
 })

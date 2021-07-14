@@ -58,13 +58,13 @@ export const sendVerificationEmail = async (
 
 	try {
 		await transporter.sendMail({
-			from: 'Ohmonpepet <contact@ohmonpepet.com>',
+			from: process.env.EMAIL_CONTACT_ADDRESS,
 			to: account.email,
-			subject: `Ohmonpepet - ${verification.subject[lang]}`,
+			subject: `${process.env.EMAIL_BRAND_NAME} - ${verification.subject[lang]}`,
 			html: emailHTML
 		})
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 	}
 }
 
@@ -103,12 +103,12 @@ export const sendForgotPwdEmail = async (account: AccountWithEmail, lang: 'fr' |
 
 	try {
 		await transporter.sendMail({
-			from: 'Ohmonpepet <contact@ohmonpepet.com>',
+			from: process.env.EMAIL_CONTACT_ADDRESS,
 			to: account.email,
-			subject: `Ohmonpepet - ${forgot.subject[lang]}`,
+			subject: `${process.env.EMAIL_BRAND_NAME} - ${forgot.subject[lang]}`,
 			html: emailHTML
 		})
 	} catch (error) {
-		console.log(error.message)
+		console.error(error)
 	}
 }

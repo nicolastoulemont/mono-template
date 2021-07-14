@@ -6,7 +6,7 @@
 	"main": "dist/main.js",
 	"scripts": {
 		"gen-env": "gen-env-types .env -e .",
-		"start": "node dist/main.js",
+		"start": "export NODE_ENV=production && node dist/main.js",
 		"dev": "tsnd --files src/dev.ts",
 		"build": "tsc"
 	},
@@ -39,6 +39,8 @@
 		"react-dom": "17.0.2"
 	},
 	"devDependencies": {
+		"@swc/core": "^1.2.63",
+		"@swc/helpers": "^0.2.12",
 		"@types/bcrypt": "^5.0.0",
 		"@types/connect-redis": "^0.0.16",
 		"@types/cookie": "^0.4.0",
