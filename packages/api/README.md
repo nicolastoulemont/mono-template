@@ -8,7 +8,7 @@ The api is launched either from the root with `yarn api:dev` or from the api pac
 
 ### Config
 
-In dev, the api uses ts-node and ts-node-dev in the transpile-only mode (cf tsconfig.json)
+In dev, the api uses ts-node and ts-node-dev in the transpile-only mode (cf api tsconfig.json)
 
 ## Build
 
